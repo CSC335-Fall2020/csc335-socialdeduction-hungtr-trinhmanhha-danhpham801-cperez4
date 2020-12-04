@@ -39,8 +39,8 @@ import java.util.ArrayList;
  */
 public class GameModel {
 	int players; // The number of players
-	int progress; // The current progress of the gameboard, reach goal to win
-	int goal; // Self-explained
+	ProgressBar progress; // A "Bar" that shows the progress of the group (as a percentage).
+	Deck sharedDeck; // a deck of "white" cards that should be shared by every players.
 	ArrayList<Integer> hands; // The current hand of player
-	Integer latest; // The latest card that has been played to the board
+	int latest; // The latest card that has been played to the board
 }

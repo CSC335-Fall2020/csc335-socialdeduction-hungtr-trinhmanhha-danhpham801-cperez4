@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
+ * @author Danh Pham
  * Course: CSC 335 Fall 2020
  * Created: Dec 4, 2020
  * File: EventCard.java
