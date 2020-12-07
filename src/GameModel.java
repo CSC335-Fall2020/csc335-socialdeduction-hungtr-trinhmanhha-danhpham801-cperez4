@@ -41,6 +41,6 @@ public class GameModel {
 	int players; // The number of players
 	int progress; // The current progress of the gameboard, reach goal to win
 	int goal; // Self-explained
-	ArrayList<Card> hands; // The current hand of player
-	Card latest; // The latest card that has been played to the board
+	ArrayList<Integer> hands; // The current hand of player
+	int latest; // The latest card that has been played to the board
 }
