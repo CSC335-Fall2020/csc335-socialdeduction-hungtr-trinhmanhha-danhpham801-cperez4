@@ -15,9 +15,8 @@ public class GameModel {
 	private Deck sharedDeck;
 	private EventCard curEvent;
 	private ArrayList<Integer> playedCards;
-	private int gameProgress;
-	private int eventSuccess;
-	private int eventFail;
+	private int turns;
+	private ProgressBar progress;
 	private int traitor;
 	
 	
@@ -35,9 +34,8 @@ public class GameModel {
 		//will hold cards played on each turn
 		this.playedCards = new ArrayList<Integer>();
 		//default number of turns
-		this.gameProgress = 5;
-		this.eventSuccess = 0;
-		this.eventFail = 0;
+		this.turns = 5;
+		this.progress = new ProgressBar();
 		int i = 0;
 		for(String name: playerNames) {
 			if(traitor == i) {
@@ -72,9 +70,9 @@ public class GameModel {
 		boolean result = curEvent.pass();
 		//adds to the success/fail counters
 		if(result) {
-			this.eventSuccess += 1;
+			progress.makeProgress('p');
 		}else {
-			this.eventFail += 1;
+			progress.makeProgress('f');
 		}
 		this.playedCards = new ArrayList<Integer>();
 		return result;
@@ -105,9 +103,9 @@ public class GameModel {
 		if (!players[traitor].isAlive()) {
 			return 0;
 		//checks to see if there are no more events to be played
-		}else if(gameProgress == 0){
+		}else if(turns == 0){
 			//if more events where successful then the group wins
-			if (eventSuccess > eventFail){
+			if (progress.winner() > 0){
 				return 0;
 			//if more events fail, or if there is a tie then the saboteur wins
 			}else {
@@ -128,8 +126,8 @@ public class GameModel {
 		return -1;
 	}
 	
-	public void progressGame() {
-		this.gameProgress -= 1;
+	public void nextTurn() {
+		this.turns -= 1;
 	}
 	public Player[] getPlayers() {
 		return this.players;
@@ -137,10 +135,14 @@ public class GameModel {
 	public EventCard getEvent() {
 		return this.curEvent;
 	}
+	public ProgressBar getProgress() {
+		return this.progress;
+	}
 	
 	public String toString() {
 		String rep = "";
 		rep += "-Placeholder-\n";
+		rep += this.progress.toString() + "\n";
 		rep += "Players:\n";
 		rep +="--------------------------------------------------------\n";
 		for(Player p: this.players) {
