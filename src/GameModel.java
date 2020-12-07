@@ -152,4 +152,24 @@ public class GameModel {
 		rep += "Current Event:\n" + curEvent.toString();
 		return rep;
 	}
+	
+	public Deck getDeck() {
+		return this.sharedDeck;
+	}
+	
+	public void add2PlayedC(Integer card) {
+		this.playedCards.add(card);
+	}
+	
+	public void emptyPlayed() {
+		this.playedCards = new ArrayList<>();
+	}
+	public void makeProgress(char c) {
+		if(c=='p') {
+			this.progress.makeProgress(c);
+		}
+		else {
+			this.progress.makeProgress(c);
+		}
+	}
 }
