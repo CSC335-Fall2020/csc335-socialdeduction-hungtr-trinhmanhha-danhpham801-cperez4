@@ -13,12 +13,34 @@ public class misc {
 		GameModel model = new GameModel(names);
 		String command = "";
 		while(model.isGameOver() == -1) {
-			System.out.println(model);
-			command = testPlayer.nextLine();
-			String[] commandArr = command.split(" ");
-			if (commandArr[0].equals("eliminate")) {
-				model.eliminate(commandArr[1].toLowerCase());
+			EventCard curEvent = model.getEvent();
+			System.out.println(curEvent);
+			for(Player p: model.getPlayers()) {
+				if (p.isAlive()) {
+					System.out.println(p);
+					command = testPlayer.nextLine();
+					String[] commandArr = command.split(" ");
+					//eliminates a player
+					if (commandArr[0].equals("eliminate")) {
+						model.eliminate(commandArr[1].toLowerCase());
+					//plays a card
+					}else if(commandArr[0].equals("play")) {
+						model.playCard(p.getName(), Integer.parseInt(commandArr[1]));
+					//prints out the current model
+					}else if(commandArr[0].equals("print")) {
+						System.out.println(model.toString());
+					}
+				}
 			}
+			boolean pass = model.resolveEvent();
+			if(pass) {
+				System.out.println("Group succeeds in the event");
+			}else{
+				System.out.println("Group failed the event");
+			}
+			model.progressGame();
+			model.generateEvent();
+			
 		}
 		System.out.println("Game Over");
 		if(model.isGameOver() == 0) {

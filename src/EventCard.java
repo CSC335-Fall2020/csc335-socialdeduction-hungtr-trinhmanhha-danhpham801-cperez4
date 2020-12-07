@@ -27,6 +27,7 @@ public class EventCard {
 	// card are put down 1 at a time 
 	public void reduce(int value) {
 		totalValue -= value;
+		System.out.println(totalValue);
 	}
 	
 	// reduce the total by a collection of values
@@ -35,6 +36,13 @@ public class EventCard {
 		for(int val : values) {
 			reduce(val);
 		}
+	}
+	public String toString() {
+		String rep = "";
+		rep += "---------\n";
+		rep += "|  " + totalValue + "  |\n";
+		rep += "---------";
+		return rep;
 	}
 	
 }

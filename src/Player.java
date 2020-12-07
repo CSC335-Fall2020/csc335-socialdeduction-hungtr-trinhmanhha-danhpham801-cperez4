@@ -31,6 +31,15 @@ public class Player {
 		this.isTraitor = isTraitor;
 	}
 	
+	public void play(int card) {
+		int i = 0;
+		for(int c : hand) {
+			if(c == card) {
+				hand[i] = 0;
+			}
+			i++;
+		}
+	}
 	
 	/**
 	 * Adds a card from the deck to this player's hand

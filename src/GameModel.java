@@ -13,6 +13,8 @@ import java.util.Random;
 public class GameModel {
 	private Player[] players;
 	private Deck sharedDeck;
+	private EventCard curEvent;
+	private ArrayList<Integer> playedCards;
 	private int gameProgress;
 	private int eventSuccess;
 	private int eventFail;
@@ -25,6 +27,8 @@ public class GameModel {
 		this.traitor = random.nextInt(numPlayers);
 		this.players = new Player[numPlayers];
 		this.sharedDeck = new Deck(numPlayers);
+		this.curEvent = new EventCard(numPlayers);
+		this.playedCards = new ArrayList<Integer>();
 		this.gameProgress = 5;
 		this.eventSuccess = 0;
 		this.eventFail = 0;
@@ -37,6 +41,34 @@ public class GameModel {
 			}
 			i++;
 		}
+	}
+	
+	public void generateEvent() {
+		this.curEvent = new EventCard(this.players.length);
+	}
+	
+	//returns the int value of the card played
+	public int playCard(String name, int card) {
+		for(Player p: players) {
+			if(p.getName().equals(name) && p.hasCard(card)) {
+				p.play(card);
+				p.draw(sharedDeck);
+				playedCards.add(card);
+			}
+		}
+		return -1;
+	}
+	
+	public boolean resolveEvent() {
+		this.curEvent.reduce(playedCards);
+		boolean result = curEvent.pass();
+		if(result) {
+			this.eventSuccess += 1;
+		}else {
+			this.eventFail += 1;
+		}
+		this.playedCards = new ArrayList<Integer>();
+		return result;
 	}
 	
 	/*
@@ -87,17 +119,26 @@ public class GameModel {
 		return -1;
 	}
 	
+	public void progressGame() {
+		this.gameProgress -= 1;
+	}
+	public Player[] getPlayers() {
+		return this.players;
+	}
+	public EventCard getEvent() {
+		return this.curEvent;
+	}
+	
 	public String toString() {
 		String rep = "";
 		rep += "-Placeholder-\n";
-		rep += "Shared Deck:\n";
-		rep += this.sharedDeck.toString() + "\n\n";
 		rep += "Players:\n";
 		rep +="--------------------------------------------------------\n";
 		for(Player p: this.players) {
 			rep += p.toString() + "\n";
 			rep +="--------------------------------------------------------\n";
 		}
+		rep += "Current Event:\n" + curEvent.toString();
 		return rep;
 	}
 }
