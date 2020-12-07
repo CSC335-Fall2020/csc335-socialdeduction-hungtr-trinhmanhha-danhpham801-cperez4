@@ -43,4 +43,12 @@ public class Deck {
 	public int draw() {
 		return deck.poll();
 	}
+	
+	public String toString() {
+		String rep = "[";
+		for(int x: deck) {
+			rep+= x + ", ";
+		}
+		return rep.substring(0, rep.length()-2) + "]";
+	}
 }
