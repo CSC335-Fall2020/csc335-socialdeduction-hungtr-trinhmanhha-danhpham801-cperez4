@@ -13,27 +13,31 @@ import java.util.Random;
 public class GameModel {
 	private Player[] players;
 	private Deck sharedDeck;
+	private EventCard curEvent;
+	private ArrayList<Integer> playedCards;
 	private int gameProgress;
 	private int eventSuccess;
 	private int eventFail;
 	private int traitor;
 	
-	/* private ProgressBar passVSFail;
-	 * private EventCard curEventCard;
-	 */
-	private EventCard curEventCard;
 	
 	public GameModel(String[] playerNames) {
 		Random random = new Random();
 		int numPlayers = playerNames.length;
+		//randomizes who the traitor is
 		this.traitor = random.nextInt(numPlayers);
+		//array of players
 		this.players = new Player[numPlayers];
+		//game deck
 		this.sharedDeck = new Deck(numPlayers);
+		//first event
+		this.curEvent = new EventCard(numPlayers);
+		//will hold cards played on each turn
+		this.playedCards = new ArrayList<Integer>();
+		//default number of turns
 		this.gameProgress = 5;
 		this.eventSuccess = 0;
 		this.eventFail = 0;
-		// ProgressBar will keep track of pass and fail events.
-		//this.passVSFail = new ProgressBar();
 		int i = 0;
 		for(String name: playerNames) {
 			if(traitor == i) {
@@ -43,6 +47,37 @@ public class GameModel {
 			}
 			i++;
 		}
+	}
+	
+	//updates the event once it has been resolved
+	public void generateEvent() {
+		this.curEvent = new EventCard(this.players.length);
+	}
+	
+	//returns the int value of the card played
+	public int playCard(String name, int card) {
+		for(Player p: players) {
+			if(p.getName().equals(name) && p.hasCard(card)) {
+				p.play(card);
+				p.draw(sharedDeck);
+				playedCards.add(card);
+			}
+		}
+		return card;
+	}
+	
+	//resolves the current event, returns true if the event was a success or false if it failed
+	public boolean resolveEvent() {
+		this.curEvent.reduce(playedCards);
+		boolean result = curEvent.pass();
+		//adds to the success/fail counters
+		if(result) {
+			this.eventSuccess += 1;
+		}else {
+			this.eventFail += 1;
+		}
+		this.playedCards = new ArrayList<Integer>();
+		return result;
 	}
 	
 	/*
@@ -72,7 +107,7 @@ public class GameModel {
 		//checks to see if there are no more events to be played
 		}else if(gameProgress == 0){
 			//if more events where successful then the group wins
-			if (eventSuccess > eventFail){ //could also use this: if(passVSFail.winner()>0){
+			if (eventSuccess > eventFail){
 				return 0;
 			//if more events fail, or if there is a tie then the saboteur wins
 			}else {
@@ -92,33 +127,27 @@ public class GameModel {
 		}
 		return -1;
 	}
-
+	
+	public void progressGame() {
+		this.gameProgress -= 1;
+	}
+	public Player[] getPlayers() {
+		return this.players;
+	}
+	public EventCard getEvent() {
+		return this.curEvent;
+	}
+	
 	public String toString() {
 		String rep = "";
 		rep += "-Placeholder-\n";
-		rep += "Shared Deck:\n";
-		rep += this.sharedDeck.toString() + "\n\n";
 		rep += "Players:\n";
 		rep +="--------------------------------------------------------\n";
 		for(Player p: this.players) {
 			rep += p.toString() + "\n";
 			rep +="--------------------------------------------------------\n";
 		}
+		rep += "Current Event:\n" + curEvent.toString();
 		return rep;
-	}
-	
-	public void pass() {
-		eventSuccess++; // passVSFail.makeProgress('p');
-	}
-	public void fail() {
-		eventFail++;  // passVSFail.makeProgress('f');
-	}
-	
-	public void setCurEventCard(EventCard eC){
-	    this.curEventCard = eC;
-	}
-	
-	public int numPlayers() {
-		return this.players.length;
 	}
 }
