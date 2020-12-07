@@ -18,6 +18,10 @@ public class GameModel {
 	private int eventFail;
 	private int traitor;
 	
+	/* private ProgressBar passVSFail;
+	 * private EventCard curEventCard;
+	 */
+	private EventCard curEventCard;
 	
 	public GameModel(String[] playerNames) {
 		Random random = new Random();
@@ -28,6 +32,8 @@ public class GameModel {
 		this.gameProgress = 5;
 		this.eventSuccess = 0;
 		this.eventFail = 0;
+		// ProgressBar will keep track of pass and fail events.
+		//this.passVSFail = new ProgressBar();
 		int i = 0;
 		for(String name: playerNames) {
 			if(traitor == i) {
@@ -66,7 +72,7 @@ public class GameModel {
 		//checks to see if there are no more events to be played
 		}else if(gameProgress == 0){
 			//if more events where successful then the group wins
-			if (eventSuccess > eventFail){
+			if (eventSuccess > eventFail){ //could also use this: if(passVSFail.winner()>0){
 				return 0;
 			//if more events fail, or if there is a tie then the saboteur wins
 			}else {
@@ -86,7 +92,7 @@ public class GameModel {
 		}
 		return -1;
 	}
-	
+
 	public String toString() {
 		String rep = "";
 		rep += "-Placeholder-\n";
@@ -99,5 +105,20 @@ public class GameModel {
 			rep +="--------------------------------------------------------\n";
 		}
 		return rep;
+	}
+	
+	public void pass() {
+		eventSuccess++; // passVSFail.makeProgress('p');
+	}
+	public void fail() {
+		eventFail++;  // passVSFail.makeProgress('f');
+	}
+	
+	public void setCurEventCard(EventCard eC){
+	    this.curEventCard = eC;
+	}
+	
+	public int numPlayers() {
+		return this.players.length;
 	}
 }
