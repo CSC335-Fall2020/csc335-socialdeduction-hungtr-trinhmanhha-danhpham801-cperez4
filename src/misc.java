@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class misc {
 	public static void main(String[] args) {
+		/////////////////////////
+		//sample game players
 		String[] names = new String[5];
 		names[0] = "Shadow";
 		names[1] = "Toasty";
@@ -12,11 +14,12 @@ public class misc {
 		///////////////////////////
 		GameModel model = new GameModel(names);
 		String command = "";
+		//sample game loop
 		while(model.isGameOver() == -1) {
-			EventCard curEvent = model.getEvent();
-			System.out.println(curEvent);
+			System.out.println(model.getEvent());
 			for(Player p: model.getPlayers()) {
 				if (p.isAlive()) {
+					//displays current player (this version is turned based only for testing the model)
 					System.out.println(p);
 					command = testPlayer.nextLine();
 					String[] commandArr = command.split(" ");
@@ -32,6 +35,7 @@ public class misc {
 					}
 				}
 			}
+			//resolves the event
 			boolean pass = model.resolveEvent();
 			if(pass) {
 				System.out.println("Group succeeds in the event");

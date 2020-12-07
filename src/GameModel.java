@@ -24,11 +24,17 @@ public class GameModel {
 	public GameModel(String[] playerNames) {
 		Random random = new Random();
 		int numPlayers = playerNames.length;
+		//randomizes who the traitor is
 		this.traitor = random.nextInt(numPlayers);
+		//array of players
 		this.players = new Player[numPlayers];
+		//game deck
 		this.sharedDeck = new Deck(numPlayers);
+		//first event
 		this.curEvent = new EventCard(numPlayers);
+		//will hold cards played on each turn
 		this.playedCards = new ArrayList<Integer>();
+		//default number of turns
 		this.gameProgress = 5;
 		this.eventSuccess = 0;
 		this.eventFail = 0;
@@ -43,6 +49,7 @@ public class GameModel {
 		}
 	}
 	
+	//updates the event once it has been resolved
 	public void generateEvent() {
 		this.curEvent = new EventCard(this.players.length);
 	}
@@ -56,12 +63,14 @@ public class GameModel {
 				playedCards.add(card);
 			}
 		}
-		return -1;
+		return card;
 	}
 	
+	//resolves the current event, returns true if the event was a success or false if it failed
 	public boolean resolveEvent() {
 		this.curEvent.reduce(playedCards);
 		boolean result = curEvent.pass();
+		//adds to the success/fail counters
 		if(result) {
 			this.eventSuccess += 1;
 		}else {
