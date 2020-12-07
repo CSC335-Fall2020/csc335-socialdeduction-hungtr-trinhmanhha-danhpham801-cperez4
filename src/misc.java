@@ -16,6 +16,7 @@ public class misc {
 		String command = "";
 		//sample game loop
 		while(model.isGameOver() == -1) {
+			System.out.println(model.getProgress());
 			System.out.println(model.getEvent());
 			for(Player p: model.getPlayers()) {
 				if (p.isAlive()) {
@@ -42,7 +43,7 @@ public class misc {
 			}else{
 				System.out.println("Group failed the event");
 			}
-			model.progressGame();
+			model.nextTurn();
 			model.generateEvent();
 			
 		}

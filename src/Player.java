@@ -1,44 +1,44 @@
+import java.util.ArrayList;
+
 /*
  * models a player in the game
  */
 
 public class Player {
 	private String name;
-	private int[] hand;
+	private ArrayList<Integer> hand;
 	private boolean isTraitor = false;
 	private boolean isAlive = true;
 	
 	public Player() {
 		this.name = "";
-		this.hand = new int[5];
-		for(int x = 0; x < 5; x++) {
-			hand[x] = 0;
-		}
+		this.hand = new ArrayList<Integer>();
 	}
 	public Player(String name, Deck deck) {
 		this.name = name;
-		this.hand = new int[5];
+		this.hand = new ArrayList<Integer>();
 		for(int x = 0; x < 5; x++) {
-			hand[x] = deck.draw();
+			hand.add(deck.draw());
 		}
 	}
 	public Player(String name, Deck deck, boolean isTraitor) {
 		this.name = name;
-		this.hand = new int[5];
+		this.hand = new ArrayList<Integer>();
 		for(int x = 0; x < 5; x++) {
-			hand[x] = deck.draw();
+			hand.add(deck.draw());
 		}
 		this.isTraitor = isTraitor;
 	}
 	
 	public void play(int card) {
 		int i = 0;
-		for(int c : hand) {
-			if(c == card) {
-				hand[i] = 0;
-			}
-			i++;
-		}
+		hand.remove((Integer)card);
+//		for(int c : hand) {
+//			if(c == card) {
+//				hand[i] = 0;
+//			}
+//			i++;
+//		}
 	}
 	
 	/**
@@ -47,11 +47,7 @@ public class Player {
 	 * @return
 	 */
 	public int draw(Deck deck) {
-		for(int x = 0; x < 5; x++) {
-			if(this.hand[x] == 0) {
-				this.hand[x] = deck.draw();
-			}
-		}
+		hand.add(deck.draw());
 		return 0;
 	}
 	
@@ -61,10 +57,8 @@ public class Player {
 	 * @return
 	 */
 	public boolean hasCard(int card) {
-		for(int x = 0; x < 5; x++) {
-			if (this.hand[x] == card) {
-				return true;
-			}
+		if(hand.contains(card)) {
+			return true;
 		}
 		return false;
 	}
@@ -86,17 +80,13 @@ public class Player {
 	public String getName() {
 		return this.name;
 	}
-	public int[] getHand() {
+	public ArrayList<Integer> getHand() {
 		return this.hand;
 	}
 	public String toString() {
 		String rep = "";
 		rep += "Player Name: " + this.name + "\n";
-		rep += "Current Hand: [";
-		for (int x = 0; x < 5; x++) {
-			rep += hand[x] + ", ";
-		}
-		rep = rep.substring(0, rep.length()-2) +"]\n";
+		rep += "Current Hand: " + hand.toString() + "\n";
 		rep += "Traitor: " + this.isTraitor + "\n";
 		rep += "Alive: " + this.isAlive;
 		return rep;
