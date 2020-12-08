@@ -31,7 +31,9 @@ public class Player {
 	}
 	
 	public void play(int card) {
+
 //		int i = 0;
+
 		hand.remove((Integer)card);
 //		for(int c : hand) {
 //			if(c == card) {

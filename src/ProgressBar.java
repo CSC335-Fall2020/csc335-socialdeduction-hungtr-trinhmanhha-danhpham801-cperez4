@@ -33,7 +33,8 @@ public class ProgressBar {
 		return pass-fail;
 	}
 	
-	// give a text view of the group current progress.
+	// give a text view of the group current progress.(percentage based)
+
 	public String toString() {
 		String ret = new String();
 		ret+="|";
