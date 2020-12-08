@@ -47,9 +47,24 @@ public class GameModel {
 		}
 	}
 	
-	//updates the event once it has been resolved
+	public GameModel(GameModel host) {
+		this.players = host.getPlayers();
+		this.sharedDeck = host.getDeck();
+		this.curEvent = host.getEvent();
+		this.playedCards = new ArrayList<Integer>();
+		this.turns = host.getTurns();
+		this.progress = host.getProgress();
+		this.traitor = host.getTraitor();
+	}
+	
+	//generates a new event to be played in a new round
 	public void generateEvent() {
 		this.curEvent = new EventCard(this.players.length);
+	}
+	
+	//sets the current event to be the event that is passed in
+	public void generateEvent(EventCard event) {
+		this.curEvent = event;
 	}
 	
 	//returns the int value of the card played
@@ -74,7 +89,19 @@ public class GameModel {
 		}else {
 			progress.makeProgress('f');
 		}
+		//resets the cards that are played after the event has been resolved
 		this.playedCards = new ArrayList<Integer>();
+		return result;
+	}
+	
+	//updates the progress for the game given a result
+	public boolean resolveEvent(boolean result) {
+		//adds to the success/fail counters
+		if(result) {
+			progress.makeProgress('p');
+		}else {
+			progress.makeProgress('f');
+		}
 		return result;
 	}
 	
@@ -137,6 +164,15 @@ public class GameModel {
 	}
 	public ProgressBar getProgress() {
 		return this.progress;
+	}
+	public Deck getDeck() {
+		return this.sharedDeck;
+	}
+	public int getTurns() {
+		return this.turns;
+	}
+	public int getTraitor() {
+		return this.traitor;
 	}
 	
 	public String toString() {
