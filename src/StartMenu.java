@@ -8,7 +8,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
-
+/**
+ * @author Danh Pham
+ * Course: CSC 335 Fall 2020
+ * Created: Dec 7, 2020
+ * File: StartMenu.java
+ * Desc: the class will show the initial menu pop up (could be better).
+ */
 public class StartMenu extends Application {
 	
 	 public void start(Stage s) {
