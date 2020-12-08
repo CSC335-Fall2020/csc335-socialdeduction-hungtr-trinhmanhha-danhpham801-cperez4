@@ -35,8 +35,16 @@ public class GameView extends Application {
 		// playerHand contains the unique hand of each player
 		FlowPane playField = new FlowPane();
 		playField.setPrefHeight(150);
+		playField.setPadding(new Insets(30, 50, 10, 50));
+		playField.setHgap(10);
+		playField.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, null, null)));
 		FlowPane playerHands = new FlowPane();
 		playerHands.setPrefHeight(150);
+		playerHands.setPadding(new Insets(20, 100, 20, 100));
+		playerHands.setHgap(20);
+		playerHands.setVgap(20);
+		playerHands.setBackground(new Background(new BackgroundFill(Color.TEAL, null, null)));
+
 
 		// cardBoard contains playField and playerHands
 		BorderPane cardBoard = new BorderPane();
@@ -46,7 +54,7 @@ public class GameView extends Application {
 		// topBoard contains eventBoard and cardBoard
 		BorderPane topBoard = new BorderPane();
 		topBoard.setLeft(eventBoard);
-		topBoard.setRight(cardBoard);
+		topBoard.setCenter(cardBoard);
 
 		// bottomBoard contains playerBoard + chatBoard
 		BorderPane bottomBoard = new BorderPane();
@@ -58,15 +66,12 @@ public class GameView extends Application {
 		chatBoard.setFill(Color.GRAY);
 
 		// Card played
-		playField.setHgap(10);
 		setCard(playField, 3);
 		setCard(playField, 4);
 		setCard(playField, 7);
 		setCard(playField, 5);
 
 		// Card on player hand
-		playerHands.setHgap(10);
-		playerHands.setVgap(10);
 		setCard(playerHands, 1);
 		setCard(playerHands, 2);
 		setCard(playerHands, 3);
@@ -108,7 +113,7 @@ public class GameView extends Application {
 		playerBoard.getChildren().add(onePlayer);
 	}
 
-	// Put a card of certain value on specified location
+	// Put an event card of certain value on specified location
 	public void setEventCard(BorderPane placement, int cardValue) {
 		Rectangle card = new Rectangle();
 		card.setFill(Color.BLACK);
