@@ -8,36 +8,41 @@
  *       (math for the goal will need to be adjusted for real game scenario.)
  */
 public class ProgressBar {
-	private int totalProgress;
-	private int goal;
-	public ProgressBar(int players) {
-		totalProgress =0;
-		//for now make the goal large allowing game to continue;
-		goal = players*players*9*2;
+	private static final int START = 50;
+	private int pass;
+	private int fail;
+	public ProgressBar() {
+		pass = START;
+		fail = START;
 	}
 	
 	 // allow the group to make progress toward the goal
-	public void makeProgress(int moveVal) {
-		totalProgress += moveVal;
+	public void makeProgress(char e) {
+		if(e=='p') {
+			pass++;
+			fail--;
+		}
+		else {
+			fail++;
+			pass--;
+		}
 	}
 	
 	// check if the group reached the goal
-	public boolean finish() {
-		return totalProgress >= goal;
+	public int winner() {
+		return pass-fail;
 	}
 	
 	// give a text view of the group current progress.(percentage based)
 	public String toString() {
 		String ret = new String();
 		ret+="|";
-		int percentage = ((totalProgress)*100)/goal;
 		for(int i=0; i<=100; i++) {
-			
-			if(i>percentage) {
-				ret+=" ";
+			if(i>pass) {
+				ret+="-";
 			}
 			else {
-				ret+="#";
+				ret+="+";
 			}
 		}
 		return ret+="|";
