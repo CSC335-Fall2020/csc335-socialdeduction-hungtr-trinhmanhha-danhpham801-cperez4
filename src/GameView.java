@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -8,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -18,13 +20,54 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
-public class GameView extends Application {
+public class GameView extends Application implements Observer {
+	private GameModel model;
+	private GameController ctr;
+	BorderPane mainBoard;
+	BorderPane bottomBoard; // Child of mainBoard
+	FlowPane playerBoard;   // Child of bottomBoard
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		GameMessage msg = (GameMessage) arg;
+		if(msg.enoughPlayer) {
+			mainBoard.setVisible(true);
+			for(String s : msg.nameList) {
+				setPlayer(playerBoard, s);
+			}
+			if(ctr.isServer) 
+				((GameControllerServer) ctr).sendToAll(msg);
+		}
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("Cardouts");
+		
+		// Show a menu for necessary info from players
+		MenuView menu = new MenuView();
+		menu.showAndWait();
+		
+		if(!menu.isComplete) stage.close();
+		
+		// Use info acquired from menu to setup
+		if(menu.isServer) {
+			model = new GameModelServer(menu.name);
+			model.addObserver(this);
+			((GameModelServer) model).addPlayer(menu.name);
+			ctr = new GameControllerServer(model);
+			stage.setTitle("Cardouts Server");
+		}
+		else { // is client
+			model = new GameModel(menu.name);
+			model.addObserver(this);
+			ctr = new GameControllerClient(model);
+			stage.setTitle("Cardouts Client");
+		}
+		
 		// mainBoard contains topBoard + bottomBoard
-		BorderPane mainBoard = new BorderPane();
+		mainBoard = new BorderPane();
+		mainBoard.setVisible(false);
 
 		// eventBoard
 		BorderPane eventBoard = new BorderPane();
@@ -32,12 +75,13 @@ public class GameView extends Application {
 		setEventCard(eventBoard, 10);
 		
 		// playField contains card being played
-		// playerHand contains the unique hand of each player
 		FlowPane playField = new FlowPane();
 		playField.setPrefHeight(150);
 		playField.setPadding(new Insets(30, 50, 10, 50));
 		playField.setHgap(10);
 		playField.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, null, null)));
+		
+		// playerHand contains the unique hand of each player
 		FlowPane playerHands = new FlowPane();
 		playerHands.setPrefHeight(150);
 		playerHands.setPadding(new Insets(20, 100, 20, 100));
@@ -57,14 +101,28 @@ public class GameView extends Application {
 		topBoard.setCenter(cardBoard);
 
 		// bottomBoard contains playerBoard + chatBoard
-		BorderPane bottomBoard = new BorderPane();
-		FlowPane playerBoard = new FlowPane();
+		bottomBoard = new BorderPane();
+		playerBoard = new FlowPane();
+		playerBoard.setOrientation(Orientation.VERTICAL);
 		// Place holder for chatboard
 		GChatBox chatbox = new GChatBox();
 		Object chatClient = null;
 		Player thisPlayer = null;
 		BorderPane chatBoard = 
 				chatbox.makeInstance(700, 250, chatClient, thisPlayer);
+		
+
+
+		// Configure
+		bottomBoard.setLeft(playerBoard);
+		bottomBoard.setRight(chatBoard);
+		mainBoard.setTop(topBoard);
+		mainBoard.setBottom(bottomBoard);
+		configure(mainBoard);
+		
+		///////////////////////////////////////////////////////
+		//////////////INITIAL SETUP ENDS HERE//////////////////
+		///////////////////////////////////////////////////////
 		
 
 		// Card played
@@ -74,27 +132,11 @@ public class GameView extends Application {
 		setCard(playField, 5);
 
 		// Card on player hand
-		setCard(playerHands, 1);
-		setCard(playerHands, 2);
-		setCard(playerHands, 3);
-		setCard(playerHands, 4);
-		setCard(playerHands, 5);
-
-		// Create player board
-		setPlayer(playerBoard, "Alice");
-		setPlayer(playerBoard, "Bob");
-		setPlayer(playerBoard, "Carol");
-		setPlayer(playerBoard, "Dereck");
-		setPlayer(playerBoard, "Eric");
-
-		// Configure
-		playerBoard.setOrientation(Orientation.VERTICAL);
-		bottomBoard.setLeft(playerBoard);
-		bottomBoard.setRight(chatBoard);
-		mainBoard.setTop(topBoard);
-		mainBoard.setBottom(bottomBoard);
-		configure(mainBoard);
-
+		ArrayList<Integer> currentHand = model.getPlayer().getHand();
+		for(Integer i : currentHand) {
+			setCard(playerHands, i);
+		}
+		
 		Scene scene = new Scene(mainBoard, 900, 600);
 		stage.setScene(scene);
 		stage.show();
@@ -138,6 +180,9 @@ public class GameView extends Application {
 		card.setStroke(Color.BLACK);
 		card.setWidth(60);
 		card.setHeight(90);
+		card.setOnMouseClicked(e -> {
+			if(ctr.isServer);
+		});
 		Text text = new Text(" " + cardValue);
 		text.setFill(Color.BLACK);
 		text.setFont(new Font(50));
@@ -152,4 +197,6 @@ public class GameView extends Application {
 		mainBoard.setPadding(new Insets(10, 10, 10, 10));
 		mainBoard.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
 	}
+
+	
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.Random;
 
 /**
@@ -10,49 +11,66 @@ import java.util.Random;
  * File: GameModel.java
  * Desc: This file is a model class for the social deduction card-game
  */
-public class GameModel {
-	private Player[] players;
+public class GameModel extends Observable {
+	protected final int testLimit = 3;
+	protected ArrayList<String> nameList;
+	private Player player;
 	private Deck sharedDeck;
 	private EventCard curEvent;
 	private ArrayList<Integer> playedCards;
+	protected int numPlayers;
 	private int turns;
 	private ProgressBar progress;
-	private int traitor;
+	// private int traitor;
 	
 	
-	public GameModel(String[] playerNames) {
-		Random random = new Random();
-		int numPlayers = playerNames.length;
-		//randomizes who the traitor is
-		this.traitor = random.nextInt(numPlayers);
-		//array of players
-		this.players = new Player[numPlayers];
+	public GameModel(String name) {
+		numPlayers = 0;
+		System.out.println("Number of players: " + numPlayers);
+		//list of every player's name
+		nameList = new ArrayList<>();
 		//game deck
-		this.sharedDeck = new Deck(numPlayers);
+		this.sharedDeck = new Deck(testLimit);
+		//player of this model
+		this.player = new Player(name, sharedDeck);
 		//first event
-		this.curEvent = new EventCard(numPlayers);
+		this.curEvent = new EventCard(testLimit);
 		//will hold cards played on each turn
 		this.playedCards = new ArrayList<Integer>();
 		//default number of turns
 		this.turns = 5;
 		this.progress = new ProgressBar();
-		int i = 0;
-		for(String name: playerNames) {
-			if(traitor == i) {
-				this.players[i] = new Player(name, sharedDeck, true);
-			}else {
-				this.players[i] = new Player(name, sharedDeck);
-			}
-			i++;
-		}
-	}
-	/**
-	 * Updates the event once it has been resolved
-	 */
-	public void generateEvent() {
-		this.curEvent = new EventCard(this.players.length);
+//		int i = 0;
+//		for(String name: playerNames) {
+//			if(traitor == i) {
+//				this.players[i] = new Player(name, sharedDeck, true);
+//			}else {
+//				this.players[i] = new Player(name, sharedDeck);
+//			}
+//			i++;
+//		}
 	}
 	
+	public void processMsg(GameMessage msg) {
+		if(msg.enoughPlayer) {
+			setChanged();
+			notifyObservers(msg);
+		}
+	}
+	
+	/*
+	public void playCard(int cardValue) {
+		player.play(cardValue);
+	}*/
+	
+	public void regPlayer(String name, Deck sharedDeck, boolean isTraitor) {
+		this.player = new Player(name, sharedDeck, isTraitor);
+	}
+	
+	//updates the event once it has been resolved
+	public void generateEvent() {
+		this.curEvent = new EventCard(this.numPlayers);
+	}
 	//sets the current event to be the event that is passed in
 	public void generateEvent(EventCard event) {
 		this.curEvent = event;
@@ -64,6 +82,7 @@ public class GameModel {
 	 * @param card the card number
 	 * @return The card number
 	 */
+	/*
 	public int playCard(String name, int card) {
 		for(Player p: players) {
 			if(p.getName().equals(name) && p.hasCard(card)) {
@@ -73,7 +92,7 @@ public class GameModel {
 			}
 		}
 		return card;
-	}
+	}*/
 	
 	//resolves the current event, returns true if the event was a success or false if it failed
 	public boolean resolveEvent() {
@@ -95,14 +114,9 @@ public class GameModel {
 	 * -1 if the player was already eliminated
 	 */
 	public int eliminate(String name) {
-		for(Player p: players) {
-			if(p.getName().toLowerCase().equals(name)) {
-				if(!p.isAlive()) {
-					return -1;
-				}
-				p.eliminate();
-			}
-		}
+		if(!player.isAlive()) return -1;
+		player.eliminate();
+		numPlayers--;
 		return 0;
 	}
 	
@@ -112,7 +126,7 @@ public class GameModel {
 	 */
 	public int isGameOver() {
 		//checks to see if the saboteur is voted out
-		if (!players[traitor].isAlive()) {
+		if (this.player.isTraitor() && !this.player.isAlive()) {
 			return 0;
 		//checks to see if there are no more events to be played
 		} else if(turns == 0){
@@ -125,15 +139,7 @@ public class GameModel {
 			}
 		} else {
 			//checks to see if there are only two players left (sabotuer and a +1)
-			int playersAlive = 0;
-			for(Player p : players) {
-				if (p.isAlive()) {
-					playersAlive++;
-				}
-			}
-			if(playersAlive == 2) {
-				return 1;
-			}
+			if(numPlayers == 2) return 0;
 		}
 		return -1;
 	}
@@ -141,23 +147,19 @@ public class GameModel {
 	public void nextTurn() {
 		this.turns -= 1;
 	}
-	public Player[] getPlayers() {
-		return this.players;
+	
+	public ArrayList<String> getNamelist() {
+		return nameList;
+	}
+	
+	public Player getPlayer() {
+		return this.player;
 	}
 	public EventCard getEvent() {
 		return this.curEvent;
 	}
 	public ProgressBar getProgress() {
 		return this.progress;
-	}
-	public Deck getDeck() {
-		return this.sharedDeck;
-	}
-	public int getTurns() {
-		return this.turns;
-	}
-	public int getTraitor() {
-		return this.traitor;
 	}
 	
 	public String toString() {
@@ -166,10 +168,9 @@ public class GameModel {
 		rep += this.progress.toString() + "\n";
 		rep += "Players:\n";
 		rep +="--------------------------------------------------------\n";
-		for(Player p: this.players) {
-			rep += p.toString() + "\n";
-			rep +="--------------------------------------------------------\n";
-		}
+
+		rep += player.toString() + "\n";
+		rep +="--------------------------------------------------------\n";
 		rep += "Current Event:\n" + curEvent.toString();
 		return rep;
 	}
@@ -199,4 +200,13 @@ public class GameModel {
 			this.progress.makeProgress(c);
 		}
 	}
+	
+	/*
+	public void setServer() {
+		isServer = true;
+	}
+	
+	public boolean isServer() {
+		return isServer;
+	}*/
 }
