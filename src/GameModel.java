@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * @author Hung Tran
+ * @author Hung Tran, cperez4
  * <p>
  * Course: CSC 335 Fall 2020
  * <p>
