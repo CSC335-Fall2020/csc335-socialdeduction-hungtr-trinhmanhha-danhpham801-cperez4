@@ -11,7 +11,7 @@ import java.util.Random;
  * 		 if players passed the event. 
  */
 public class EventCard {
-	int totalValue;
+	private int totalValue;
 	public EventCard(int players) {
 		// total weight should be between 1*Total # of Players and 9*Total # of Players
 		totalValue = new Random().nextInt(8)+1;
@@ -35,6 +35,10 @@ public class EventCard {
 		for(int val : values) {
 			reduce(val);
 		}
+	}
+	
+	public String toString() {
+		return String.valueOf(totalValue);
 	}
 	
 }

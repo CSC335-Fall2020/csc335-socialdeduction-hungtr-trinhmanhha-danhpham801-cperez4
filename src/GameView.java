@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -8,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -19,10 +17,16 @@ import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
 public class GameView extends Application {
+	private GameModel model;
+	private GameController ctr;
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("Cardouts");
+		model = new GameModel();
+		MenuView menu = new MenuView(model, ctr);
+		menu.showAndWait();
+		
 		// mainBoard contains topBoard + bottomBoard
 		BorderPane mainBoard = new BorderPane();
 
@@ -32,12 +36,13 @@ public class GameView extends Application {
 		setEventCard(eventBoard, 10);
 		
 		// playField contains card being played
-		// playerHand contains the unique hand of each player
 		FlowPane playField = new FlowPane();
 		playField.setPrefHeight(150);
 		playField.setPadding(new Insets(30, 50, 10, 50));
 		playField.setHgap(10);
 		playField.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, null, null)));
+		
+		// playerHand contains the unique hand of each player
 		FlowPane playerHands = new FlowPane();
 		playerHands.setPrefHeight(150);
 		playerHands.setPadding(new Insets(20, 100, 20, 100));
@@ -59,11 +64,25 @@ public class GameView extends Application {
 		// bottomBoard contains playerBoard + chatBoard
 		BorderPane bottomBoard = new BorderPane();
 		FlowPane playerBoard = new FlowPane();
+		playerBoard.setOrientation(Orientation.VERTICAL);
 		// Place holder for chatboard
 		Rectangle chatBoard = new Rectangle();
 		chatBoard.setWidth(700);
 		chatBoard.setHeight(320);
 		chatBoard.setFill(Color.GRAY);
+
+
+		// Configure
+		bottomBoard.setLeft(playerBoard);
+		bottomBoard.setRight(chatBoard);
+		mainBoard.setTop(topBoard);
+		mainBoard.setBottom(bottomBoard);
+		configure(mainBoard);
+		
+		///////////////////////////////////////////////////////
+		//////////////INITIAL SETUP ENDS HERE//////////////////
+		///////////////////////////////////////////////////////
+		
 
 		// Card played
 		setCard(playField, 3);
@@ -84,15 +103,7 @@ public class GameView extends Application {
 		setPlayer(playerBoard, "Carol");
 		setPlayer(playerBoard, "Dereck");
 		setPlayer(playerBoard, "Eric");
-
-		// Configure
-		playerBoard.setOrientation(Orientation.VERTICAL);
-		bottomBoard.setLeft(playerBoard);
-		bottomBoard.setRight(chatBoard);
-		mainBoard.setTop(topBoard);
-		mainBoard.setBottom(bottomBoard);
-		configure(mainBoard);
-
+		
 		Scene scene = new Scene(mainBoard, 900, 600);
 		stage.setScene(scene);
 		stage.show();
