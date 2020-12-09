@@ -11,30 +11,41 @@ import java.util.Random;
  * 		 if players passed the event. 
  */
 public class EventCard {
-	int totalValue;
+	private int totalValue;
 	public EventCard(int players) {
 		// total weight should be between 1*Total # of Players and 9*Total # of Players
 		totalValue = new Random().nextInt(8)+1;
 		totalValue *= players;
 	}
-	
-	// check if the players have pass the event or not.
+	/**
+	 * check if the players have pass the event or not.
+	 * @return true if the event is passed.
+	 */
 	public boolean pass() {
 		return totalValue<=0;
 	}
 	
-	// reduce the number by a single value
-	// card are put down 1 at a time 
+	// reduce the number by a single value 
+	// card are put down 1 at a time (sequential gameplay)
 	public void reduce(int value) {
 		totalValue -= value;
 	}
 	
-	// reduce the total by a collection of values
-	// all players put down cards at the same time 
+	/**
+	 * reduce the total by a collection of values
+	 * all players put down cards at the same time (simultaneous/buffered gameplay)
+	 */
 	public void reduce(ArrayList<Integer> values) {
 		for(int val : values) {
 			reduce(val);
 		}
+	}
+	public String toString() {
+		String rep = "";
+		rep += "---------\n";
+		rep += "|  " + totalValue + "  |\n";
+		rep += "---------";
+		return rep;
 	}
 	
 }
