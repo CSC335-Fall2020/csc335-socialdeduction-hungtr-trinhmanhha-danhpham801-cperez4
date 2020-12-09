@@ -23,7 +23,8 @@ public class GameModel extends Observable {
 	
 	public GameModel() {
 		// Test with 3 players first
-		int numPlayers = 1;
+		numPlayers = 1;
+		System.out.println("Number of players: " + numPlayers);
 		//array of players
 		this.player = new Player();
 		//game deck
@@ -39,7 +40,7 @@ public class GameModel extends Observable {
 	
 	public void processMsg(GameMessage msg) {
 		if(msg.newPlayer) numPlayers++;
-		if(numPlayers == 2) {
+		if(numPlayers == 3) {
 			setChanged();
 			notifyObservers(new GameMessage(2));
 		}

@@ -46,6 +46,7 @@ public class GameControllerServer extends GameController {
 						GameMessage message = messages.take();
 						// Do some handling here...
 						System.out.println("Message Received: " + message);
+						sendToAll(message);
 						Platform.runLater(new Runnable() {
 							@Override public void run() {
 								gM.processMsg(message);
@@ -68,15 +69,22 @@ public class GameControllerServer extends GameController {
 
 		ConnectionToClient(Socket socket) throws IOException {
 			this.socket = socket;
-			in = new ObjectInputStream(socket.getInputStream());
+			
 			out = new ObjectOutputStream(socket.getOutputStream());
 
 			Thread read = new Thread(){
 				public void run(){
+					try {
+						in = new ObjectInputStream(socket.getInputStream());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					while(true){
 						try{
 							GameMessage obj = (GameMessage) in.readObject();
 							messages.put(obj);
+							System.out.println("New Message received in Server");
 						}
 						catch(IOException 
 							| ClassNotFoundException 
@@ -102,7 +110,7 @@ public class GameControllerServer extends GameController {
 		clientList.get(index).write(message);
 	}
 
-	public void sendToAll(Object message){
+	public void sendToAll(GameMessage message){
 		for(ConnectionToClient client : clientList)
 			client.write(message);
 	}

@@ -48,11 +48,16 @@ public class GameControllerClient extends GameController {
 
         ConnectionToServer(Socket socket) throws IOException {
             this.socket = socket;
-            in = new ObjectInputStream(socket.getInputStream());
+            
             out = new ObjectOutputStream(socket.getOutputStream());
 
             Thread read = new Thread(){
                 public void run(){
+                	try {
+						in = new ObjectInputStream(socket.getInputStream());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
                     while(true){
                         try{
                         	GameMessage obj = (GameMessage) in.readObject();

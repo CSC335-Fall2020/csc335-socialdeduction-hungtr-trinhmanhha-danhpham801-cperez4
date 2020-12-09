@@ -27,13 +27,16 @@ public class GameView extends Application implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		GameMessage msg = (GameMessage) arg;
-		if(msg.enoughPlayer) mainBoard.setVisible(true);
+		if(msg.enoughPlayer) {
+			mainBoard.setVisible(true);
+		}
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("Cardouts");
 		model = new GameModel();
+		model.addObserver(this);
 		MenuView menu = new MenuView();
 		menu.showAndWait();
 		if(!menu.isComplete) stage.close();
