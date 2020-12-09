@@ -47,12 +47,19 @@ public class GameModel {
 		}
 	}
 	
-	//updates the event once it has been resolved
+	/**
+	 * Updates the event once it has been resolved
+	 */
 	public void generateEvent() {
 		this.curEvent = new EventCard(this.players.length);
 	}
 	
-	//returns the int value of the card played
+	/**
+	 * returns the int value of the card played
+	 * @param name The name of the player that is playing the card
+	 * @param card the card number
+	 * @return The card number
+	 */
 	public int playCard(String name, int card) {
 		for(Player p: players) {
 			if(p.getName().equals(name) && p.hasCard(card)) {
@@ -94,16 +101,16 @@ public class GameModel {
 		return 0;
 	}
 	
-	/*
+	/**
 	 * checks to see if any of the end-game conditions have been met
-	 * returns -1 if the game is not over, 0 if the group wins, 1 if the saboteur wins
+	 * @return -1 if the game is not over, 0 if the group wins, 1 if the saboteur wins
 	 */
 	public int isGameOver() {
 		//checks to see if the saboteur is voted out
 		if (!players[traitor].isAlive()) {
 			return 0;
 		//checks to see if there are no more events to be played
-		}else if(turns == 0){
+		} else if(turns == 0){
 			//if more events where successful then the group wins
 			if (progress.winner() > 0){
 				return 0;
@@ -111,7 +118,7 @@ public class GameModel {
 			}else {
 				return 1;
 			}
-		}else {
+		} else {
 			//checks to see if there are only two players left (sabotuer and a +1)
 			int playersAlive = 0;
 			for(Player p : players) {
@@ -157,18 +164,29 @@ public class GameModel {
 		return this.sharedDeck;
 	}
 	
+	/**
+	 * Adds 'card' into played cards
+	 * @param card the card to be added to the list of played cards
+	 */
 	public void add2PlayedC(Integer card) {
 		this.playedCards.add(card);
 	}
-	
+	/**
+	 * Clears the played cards list
+	 */
 	public void emptyPlayed() {
 		this.playedCards = new ArrayList<>();
 	}
+	/**
+	 * Makes this game model to make progress.
+	 * @param c 'p' if the event passed, otherwise, interpret as 'f' (falled)
+	 */
 	public void makeProgress(char c) {
 		if(c=='p') {
 			this.progress.makeProgress(c);
 		}
 		else {
+			assert(c == 'f');
 			this.progress.makeProgress(c);
 		}
 	}
