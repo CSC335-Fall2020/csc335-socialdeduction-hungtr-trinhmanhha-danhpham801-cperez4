@@ -16,6 +16,7 @@ public class GameControllerClient extends GameController {
         socket = new Socket("localhost", 4000);
         messages = new LinkedBlockingQueue<GameMessage>();
         server = new ConnectionToServer(socket);
+        server.write(new GameMessage(1));
 
         Thread messageHandling = new Thread() {
             public void run(){
@@ -37,6 +38,7 @@ public class GameControllerClient extends GameController {
 
         messageHandling.setDaemon(true);
         messageHandling.start();
+        
     }
 
     private class ConnectionToServer {

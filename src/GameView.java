@@ -1,3 +1,6 @@
+import java.util.Observable;
+import java.util.Observer;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -16,19 +19,32 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
-public class GameView extends Application {
+public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
+	BorderPane mainBoard;
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		GameMessage msg = (GameMessage) arg;
+		if(msg.enoughPlayer) mainBoard.setVisible(true);
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("Cardouts");
 		model = new GameModel();
-		MenuView menu = new MenuView(model, ctr);
+		MenuView menu = new MenuView();
 		menu.showAndWait();
+		if(!menu.isComplete) stage.close();
+		if(menu.isServer) 
+			ctr = new GameControllerServer(model);
+		else 
+			ctr = new GameControllerClient(model);
 		
 		// mainBoard contains topBoard + bottomBoard
-		BorderPane mainBoard = new BorderPane();
+		mainBoard = new BorderPane();
+		mainBoard.setVisible(false);
 
 		// eventBoard
 		BorderPane eventBoard = new BorderPane();
@@ -161,4 +177,6 @@ public class GameView extends Application {
 		mainBoard.setPadding(new Insets(10, 10, 10, 10));
 		mainBoard.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
 	}
+
+	
 }

@@ -24,7 +24,9 @@ public class MenuView extends Stage {
 	Label testField;
 	
 
-	public MenuView(GameModel model, GameController ctr) {
+	public MenuView() {
+		isServer = true;
+		
 		// GridPane settings
 		window = new GridPane();
 		window.setHgap(10);
@@ -52,9 +54,9 @@ public class MenuView extends Stage {
 		cancelButton = new Button("Cancel");
 		okButton.setOnMouseClicked(e -> {
 			isComplete = true;
-			testField.setText(nameText.getText());
-			//if(isServer) ctr = new GameControllerServer(model);
-			//this.close();
+			name = nameText.getText();
+			//testField.setText(nameText.getText());
+			this.close();
 		});
 		cancelButton.setOnMouseClicked(e -> {
 			isComplete = false;

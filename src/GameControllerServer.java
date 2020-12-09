@@ -28,6 +28,7 @@ public class GameControllerServer extends GameController {
 				while(true){
 					try{
 						Socket s = serverSocket.accept();
+						System.out.println("Connection accepted!");
 						clientList.add(new ConnectionToClient(s));
 					}
 					catch(IOException e){ e.printStackTrace(); }

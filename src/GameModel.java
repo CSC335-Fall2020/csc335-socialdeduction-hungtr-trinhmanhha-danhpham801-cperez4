@@ -39,9 +39,9 @@ public class GameModel extends Observable {
 	
 	public void processMsg(GameMessage msg) {
 		if(msg.newPlayer) numPlayers++;
-		if(numPlayers == 3) {
+		if(numPlayers == 2) {
 			setChanged();
-			notifyObservers();
+			notifyObservers(new GameMessage(2));
 		}
 	}
 	
