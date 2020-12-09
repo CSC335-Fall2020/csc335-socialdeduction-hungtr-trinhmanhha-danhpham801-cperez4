@@ -13,7 +13,7 @@ import javafx.application.Application;
   import javafx.scene.text.Text;
   import javafx.stage.Stage;
   /**
-   * @author Danh Pham
+   * @author Danh Pham, Hung Tran
    * Course: CSC 335 Fall 2020
    * Created: Dec 5, 2020
    * File: GChatBox.java
