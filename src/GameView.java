@@ -23,27 +23,48 @@ public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
 	BorderPane mainBoard;
+	BorderPane bottomBoard; // Child of mainBoard
+	FlowPane playerBoard;   // Child of bottomBoard
 	
 	@Override
 	public void update(Observable o, Object arg) {
 		GameMessage msg = (GameMessage) arg;
 		if(msg.enoughPlayer) {
 			mainBoard.setVisible(true);
+			for(String s : msg.nameList) {
+				setPlayer(playerBoard, s);
+			}
+			if(ctr.isServer) 
+				((GameControllerServer) ctr).sendToAll(msg);
 		}
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		stage.setTitle("Cardouts");
-		model = new GameModel();
-		model.addObserver(this);
+		
+		// Show a menu for necessary info from players
 		MenuView menu = new MenuView();
 		menu.showAndWait();
+		
 		if(!menu.isComplete) stage.close();
-		if(menu.isServer) 
+		
+		// Use info acquired from menu to setup
+		if(menu.isServer) {
+			model = new GameModelServer();
+			model.addObserver(this);
+			model.getPlayer().setName(menu.name);
+			((GameModelServer) model).addPlayer(menu.name);
 			ctr = new GameControllerServer(model);
-		else 
+			stage.setTitle("Cardouts Server");
+		}
+		else { // is client
+			model = new GameModel();
+			model.addObserver(this);
+			model.getPlayer().setName(menu.name);
 			ctr = new GameControllerClient(model);
+			stage.setTitle("Cardouts Client");
+		}
 		
 		// mainBoard contains topBoard + bottomBoard
 		mainBoard = new BorderPane();
@@ -81,8 +102,8 @@ public class GameView extends Application implements Observer {
 		topBoard.setCenter(cardBoard);
 
 		// bottomBoard contains playerBoard + chatBoard
-		BorderPane bottomBoard = new BorderPane();
-		FlowPane playerBoard = new FlowPane();
+		bottomBoard = new BorderPane();
+		playerBoard = new FlowPane();
 		playerBoard.setOrientation(Orientation.VERTICAL);
 		// Place holder for chatboard
 		Rectangle chatBoard = new Rectangle();
@@ -117,11 +138,13 @@ public class GameView extends Application implements Observer {
 		setCard(playerHands, 5);
 
 		// Create player board
+		/*
 		setPlayer(playerBoard, "Alice");
 		setPlayer(playerBoard, "Bob");
 		setPlayer(playerBoard, "Carol");
 		setPlayer(playerBoard, "Dereck");
 		setPlayer(playerBoard, "Eric");
+		*/
 		
 		Scene scene = new Scene(mainBoard, 900, 600);
 		stage.setScene(scene);

@@ -1,5 +1,6 @@
 public class GameController {
-	private GameModel model;
+	protected GameModel model;
+	protected boolean isServer;
 	/*
 	private ServerSocket server;
 	private Socket connection;

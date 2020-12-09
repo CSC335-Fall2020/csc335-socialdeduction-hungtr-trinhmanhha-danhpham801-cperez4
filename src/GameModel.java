@@ -12,20 +12,22 @@ import java.util.Random;
  * Desc: This file is a model class for the social deduction card-game
  */
 public class GameModel extends Observable {
+	protected ArrayList<String> nameList;
 	private Player player;
 	private Deck sharedDeck;
 	private EventCard curEvent;
 	private ArrayList<Integer> playedCards;
-	private int numPlayers;
+	protected int numPlayers;
 	private int turns;
 	private ProgressBar progress;
 	
 	
 	public GameModel() {
-		// Test with 3 players first
-		numPlayers = 1;
+		numPlayers = 0;
 		System.out.println("Number of players: " + numPlayers);
-		//array of players
+		//list of every player's name
+		nameList = new ArrayList<>();
+		//player of this model
 		this.player = new Player();
 		//game deck
 		this.sharedDeck = new Deck(numPlayers);
@@ -39,10 +41,9 @@ public class GameModel extends Observable {
 	}
 	
 	public void processMsg(GameMessage msg) {
-		if(msg.newPlayer) numPlayers++;
-		if(numPlayers == 3) {
+		if(msg.enoughPlayer) {
 			setChanged();
-			notifyObservers(new GameMessage(2));
+			notifyObservers(msg);
 		}
 	}
 	
@@ -120,7 +121,12 @@ public class GameModel extends Observable {
 	public void nextTurn() {
 		this.turns -= 1;
 	}
-	public Player getPlayers() {
+	
+	public ArrayList<String> getNamelist() {
+		return nameList;
+	}
+	
+	public Player getPlayer() {
 		return this.player;
 	}
 	public EventCard getEvent() {

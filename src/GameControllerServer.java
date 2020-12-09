@@ -15,6 +15,7 @@ public class GameControllerServer extends GameController {
 
 	public GameControllerServer(GameModel gM) {
 		super(gM);
+		isServer = true;
 		clientList = new ArrayList<ConnectionToClient>();
         messages = new LinkedBlockingQueue<GameMessage>();
 		try {
@@ -28,6 +29,9 @@ public class GameControllerServer extends GameController {
 				while(true){
 					try{
 						Socket s = serverSocket.accept();
+						// send info of server to all client
+						sendToAll(new GameMessage(GameMessage.NEWPLAYER,
+								  gM.getPlayer().getName()));
 						System.out.println("Connection accepted!");
 						clientList.add(new ConnectionToClient(s));
 					}
@@ -49,7 +53,7 @@ public class GameControllerServer extends GameController {
 						sendToAll(message);
 						Platform.runLater(new Runnable() {
 							@Override public void run() {
-								gM.processMsg(message);
+								model.processMsg(message);
 							}
 						});
 					}

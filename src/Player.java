@@ -77,6 +77,10 @@ public class Player {
 		return this.isAlive;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public String getName() {
 		return this.name;
 	}

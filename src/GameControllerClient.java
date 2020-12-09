@@ -13,10 +13,14 @@ public class GameControllerClient extends GameController {
 
     public GameControllerClient(GameModel gM) throws IOException{
     	super(gM);
+    	isServer = false;
         socket = new Socket("localhost", 4000);
         messages = new LinkedBlockingQueue<GameMessage>();
         server = new ConnectionToServer(socket);
-        server.write(new GameMessage(1));
+        
+        // Send info of this new player to server
+        server.write(new GameMessage
+        		(GameMessage.NEWPLAYER, gM.getPlayer().getName()));
 
         Thread messageHandling = new Thread() {
             public void run(){
