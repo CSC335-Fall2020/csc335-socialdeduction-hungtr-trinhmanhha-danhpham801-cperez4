@@ -19,8 +19,10 @@ import java.util.Random;
 
 
 public class Deck {
+	private int players;
 	private Queue<Integer> deck = new LinkedList<>();
 	public Deck(int players) {
+		this.players = players;
 		ArrayList<Integer> aL = new ArrayList<>();
 		// Make a deck
 		for(int i = 1; i<=9 ; i++) {
