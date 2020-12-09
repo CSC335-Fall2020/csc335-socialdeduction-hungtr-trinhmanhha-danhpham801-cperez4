@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -51,17 +52,15 @@ public class GameView extends Application implements Observer {
 		
 		// Use info acquired from menu to setup
 		if(menu.isServer) {
-			model = new GameModelServer();
+			model = new GameModelServer(menu.name);
 			model.addObserver(this);
-			model.getPlayer().setName(menu.name);
 			((GameModelServer) model).addPlayer(menu.name);
 			ctr = new GameControllerServer(model);
 			stage.setTitle("Cardouts Server");
 		}
 		else { // is client
-			model = new GameModel();
+			model = new GameModel(menu.name);
 			model.addObserver(this);
-			model.getPlayer().setName(menu.name);
 			ctr = new GameControllerClient(model);
 			stage.setTitle("Cardouts Client");
 		}
@@ -131,20 +130,10 @@ public class GameView extends Application implements Observer {
 		setCard(playField, 5);
 
 		// Card on player hand
-		setCard(playerHands, 1);
-		setCard(playerHands, 2);
-		setCard(playerHands, 3);
-		setCard(playerHands, 4);
-		setCard(playerHands, 5);
-
-		// Create player board
-		/*
-		setPlayer(playerBoard, "Alice");
-		setPlayer(playerBoard, "Bob");
-		setPlayer(playerBoard, "Carol");
-		setPlayer(playerBoard, "Dereck");
-		setPlayer(playerBoard, "Eric");
-		*/
+		ArrayList<Integer> currentHand = model.getPlayer().getHand();
+		for(Integer i : currentHand) {
+			setCard(playerHands, i);
+		}
 		
 		Scene scene = new Scene(mainBoard, 900, 600);
 		stage.setScene(scene);
@@ -189,6 +178,9 @@ public class GameView extends Application implements Observer {
 		card.setStroke(Color.BLACK);
 		card.setWidth(60);
 		card.setHeight(90);
+		card.setOnMouseClicked(e -> {
+			if(ctr.isServer);
+		});
 		Text text = new Text(" " + cardValue);
 		text.setFill(Color.BLACK);
 		text.setFont(new Font(50));

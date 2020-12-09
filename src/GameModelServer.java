@@ -1,5 +1,9 @@
 
 public class GameModelServer extends GameModel {
+	public GameModelServer(String name) {
+		super(name);
+	}
+
 	@Override
 	public void processMsg(GameMessage msg) {
 		// If message notifies there's a new player
