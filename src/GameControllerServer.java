@@ -26,7 +26,7 @@ public class GameControllerServer extends GameController {
 
 		Thread accept = new Thread() {
 			public void run(){
-				while(true){
+				while(model.numPlayers != model.testLimit){
 					try{
 						Socket s = serverSocket.accept();
 						// send info of server to all client

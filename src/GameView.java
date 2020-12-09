@@ -24,13 +24,14 @@ public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
 	BorderPane mainBoard;
+	FlowPane playField;
 	BorderPane bottomBoard; // Child of mainBoard
 	FlowPane playerBoard;   // Child of bottomBoard
 	
 	@Override
 	public void update(Observable o, Object arg) {
 		GameMessage msg = (GameMessage) arg;
-		if(msg.enoughPlayer) {
+		if(msg.enoughPlayer && !mainBoard.isVisible()) {
 			mainBoard.setVisible(true);
 			for(String s : msg.nameList) {
 				setPlayer(playerBoard, s);
@@ -38,6 +39,15 @@ public class GameView extends Application implements Observer {
 			if(ctr.isServer) 
 				((GameControllerServer) ctr).sendToAll(msg);
 		}
+		
+		if(msg.playCard) {
+			setCard(playField, msg.latestCard);
+			if(msg.enoughCard) {
+				playField.setVisible(true);
+			}
+		}
+		
+		
 	}
 
 	@Override
@@ -75,7 +85,8 @@ public class GameView extends Application implements Observer {
 		setEventCard(eventBoard, 10);
 		
 		// playField contains card being played
-		FlowPane playField = new FlowPane();
+		playField = new FlowPane();
+		playField.setVisible(false);
 		playField.setPrefHeight(150);
 		playField.setPadding(new Insets(30, 50, 10, 50));
 		playField.setHgap(10);
@@ -121,13 +132,6 @@ public class GameView extends Application implements Observer {
 		///////////////////////////////////////////////////////
 		//////////////INITIAL SETUP ENDS HERE//////////////////
 		///////////////////////////////////////////////////////
-		
-
-		// Card played
-		setCard(playField, 3);
-		setCard(playField, 4);
-		setCard(playField, 7);
-		setCard(playField, 5);
 
 		// Card on player hand
 		ArrayList<Integer> currentHand = model.getPlayer().getHand();
@@ -178,9 +182,6 @@ public class GameView extends Application implements Observer {
 		card.setStroke(Color.BLACK);
 		card.setWidth(60);
 		card.setHeight(90);
-		card.setOnMouseClicked(e -> {
-			if(ctr.isServer);
-		});
 		Text text = new Text(" " + cardValue);
 		text.setFill(Color.BLACK);
 		text.setFont(new Font(50));
@@ -188,6 +189,21 @@ public class GameView extends Application implements Observer {
 		StackPane cardWithText = new StackPane();
 		cardWithText.getChildren().addAll(card, text);
 		placement.getChildren().add(cardWithText);
+		card.setOnMouseClicked(e -> {
+			placement.getChildren().remove(cardWithText);
+			if(ctr.isServer) {
+				model.player.play(cardValue);
+				GameMessage toSend = new GameMessage
+						(GameMessage.PLAYCARD, cardValue);
+				((GameControllerServer) ctr).sendToAll(toSend);
+				model.processMsg(toSend);
+			}
+			else {
+				model.player.play(cardValue);
+				((GameControllerClient) ctr).send(new GameMessage
+						(GameMessage.PLAYCARD, cardValue));
+			}
+		});
 	}
 
 	//

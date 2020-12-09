@@ -4,26 +4,32 @@ import java.util.ArrayList;
 public class GameMessage implements Serializable {
 	public static final int NEWPLAYER = 1;
 	public static final int ENOUGHPLAYER = 2; 
+	public static final int PLAYCARD = 3;
+	public static final int ENOUGHCARD = 4;
 	public boolean newPlayer;
 	public boolean enoughPlayer;
+	public boolean playCard;
+	public boolean enoughCard;
 	public String playerName;
 	public ArrayList<String> nameList;
+	int latestCard;
 	private static final long serialVersionUID = 1L;
 	
 	public GameMessage(int type) {
-		newPlayer = false;
-		enoughPlayer = false;
+		init();
 		if(type == NEWPLAYER) {
 			newPlayer = true;
 		}
 		if(type == ENOUGHPLAYER) {
 			enoughPlayer = true;
 		}
+		if(type == ENOUGHCARD) {
+			enoughCard = true;
+		}
 	}
 	
 	public GameMessage(int type, String name) {
-		newPlayer = false;
-		enoughPlayer = false;
+		init();
 		if(type == NEWPLAYER) {
 			newPlayer = true;
 			playerName = name;
@@ -31,11 +37,29 @@ public class GameMessage implements Serializable {
 	}
 	
 	public GameMessage(int type, ArrayList<String> names) {
-		newPlayer = false;
-		enoughPlayer = false;
+		init();
 		if(type == ENOUGHPLAYER) {
 			enoughPlayer = true;
 			nameList = names;
 		}
+	}
+	
+	public GameMessage(int type, int card) {
+		init();
+		if(type == PLAYCARD) {
+			playCard = true;
+			latestCard = card;
+		}
+	}
+	
+	public void markEnoughCard() {
+		enoughCard = true;
+	}
+	
+	private void init() {
+		newPlayer = false;
+		enoughPlayer = false;
+		playCard = false;
+		enoughCard = false;
 	}
 }

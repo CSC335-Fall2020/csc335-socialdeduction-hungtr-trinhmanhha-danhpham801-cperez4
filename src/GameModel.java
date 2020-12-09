@@ -14,10 +14,10 @@ import java.util.Random;
 public class GameModel extends Observable {
 	protected final int testLimit = 3;
 	protected ArrayList<String> nameList;
-	private Player player;
+	protected Player player;
 	private Deck sharedDeck;
 	private EventCard curEvent;
-	private ArrayList<Integer> playedCards;
+	protected ArrayList<Integer> playedCards;
 	protected int numPlayers;
 	private int turns;
 	private ProgressBar progress;
@@ -43,6 +43,15 @@ public class GameModel extends Observable {
 	
 	public void processMsg(GameMessage msg) {
 		if(msg.enoughPlayer) {
+			setChanged();
+			notifyObservers(msg);
+		}
+		
+		if(msg.playCard) {
+			playedCards.add(msg.latestCard);
+			System.out.println(playedCards.size());
+			if (playedCards.size() == testLimit)
+				msg.markEnoughCard();
 			setChanged();
 			notifyObservers(msg);
 		}

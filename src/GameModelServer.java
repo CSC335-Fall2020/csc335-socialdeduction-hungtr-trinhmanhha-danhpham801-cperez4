@@ -16,6 +16,21 @@ public class GameModelServer extends GameModel {
 			setChanged();
 			notifyObservers(new GameMessage(GameMessage.ENOUGHPLAYER, nameList));
 		}
+		
+		if(msg.playCard) {
+			playedCards.add(msg.latestCard);
+			System.out.println(playedCards.size());
+			if (playedCards.size() == testLimit)
+				msg.markEnoughCard();
+			setChanged();
+			notifyObservers(msg);
+		}
+	}
+	
+	public void playCard(int card) {
+		playedCards.add(card);
+		player.play(card);
+		System.out.println(playedCards.size());
 	}
 	
 	public void addPlayer(String name) {
