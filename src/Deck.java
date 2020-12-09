@@ -20,7 +20,9 @@ import java.util.Random;
 
 public class Deck {
 	private Queue<Integer> deck = new LinkedList<>();
+	private int players;
 	public Deck(int players) {
+		this.players = players;
 		ArrayList<Integer> aL = new ArrayList<>();
 		for(int i = 1; i<=9 ; i++) {
 			for(int j = 0; j<2*players; j++) {
@@ -41,6 +43,23 @@ public class Deck {
 	}
 	
 	public int draw() {
+		if(deck.isEmpty()) {
+			Queue<Integer> temp = new LinkedList<>();
+			ArrayList<Integer> aL = new ArrayList<>();
+			for(int i = 1; i<=9 ; i++) {
+				for(int j = 0; j<2*players; j++) {
+					aL.add(i);
+				}
+			}
+			for(int p=0; p<players; p++) {
+				int time = new Random().nextInt(players)+1;
+				for(int s=0; s<time; s++) {
+					Collections.shuffle(aL);
+				}
+			}
+			temp.addAll(aL);
+			this.deck = temp;
+		}
 		return deck.poll();
 	}
 }
