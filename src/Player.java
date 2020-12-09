@@ -29,16 +29,14 @@ public class Player {
 		}
 		this.isTraitor = isTraitor;
 	}
-	
-	public void play(int card) {
-		int i = 0;
-		hand.remove((Integer)card);
-//		for(int c : hand) {
-//			if(c == card) {
-//				hand[i] = 0;
-//			}
-//			i++;
-//		}
+	/**
+	 * Attempts to play (remove, rather) a card from the current deck.
+	 * @param card the event card number that this player is playing
+	 * @return true if there exists such card, false otherwise. False should
+	 * never be returned.
+	 */
+	public boolean play(int card) {
+		return hand.remove((Integer)card);
 	}
 	
 	/**

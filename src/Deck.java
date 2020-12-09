@@ -22,12 +22,15 @@ public class Deck {
 	private Queue<Integer> deck = new LinkedList<>();
 	public Deck(int players) {
 		ArrayList<Integer> aL = new ArrayList<>();
+		// Make a deck
 		for(int i = 1; i<=9 ; i++) {
 			for(int j = 0; j<2*players; j++) {
 				aL.add(i);
 			}
 		}
+		// Shuffle the deck
 		for(int p=0; p<players; p++) {
+			// for each player
 			int time = new Random().nextInt(players)+1;
 			for(int s=0; s<time; s++) {
 				Collections.shuffle(aL);
@@ -35,11 +38,17 @@ public class Deck {
 		}
 		deck.addAll(aL);
 	}
-	
+	/**
+	 * Determines if the deck is empty
+	 * @return true if deck is empty
+	 */
 	public boolean isEmpty() {
 		return deck.size()==0;
 	}
-	
+	/**
+	 * Draws a card from the deck
+	 * @return the event card number that is drawn
+	 */
 	public int draw() {
 		return deck.poll();
 	}

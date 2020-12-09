@@ -20,19 +20,27 @@ public class misc {
 			System.out.println(model.getEvent());
 			for(Player p: model.getPlayers()) {
 				if (p.isAlive()) {
-					//displays current player (this version is turned based only for testing the model)
-					System.out.println(p);
-					command = testPlayer.nextLine();
-					String[] commandArr = command.split(" ");
-					//eliminates a player
-					if (commandArr[0].equals("eliminate")) {
-						model.eliminate(commandArr[1].toLowerCase());
-					//plays a card
-					}else if(commandArr[0].equals("play")) {
-						model.playCard(p.getName(), Integer.parseInt(commandArr[1]));
-					//prints out the current model
-					}else if(commandArr[0].equals("print")) {
-						System.out.println(model.toString());
+					boolean exit = false;
+					while(!exit) {
+						//displays current player (this version is turned based only for testing the model)
+						System.out.println(p);
+						System.out.println(
+								"Available commands: \n"
+								+ "eliminate <playername>\n"
+								+ "play <event_card_number>\n"
+								+ "print");
+						command = testPlayer.nextLine();
+						String[] commandArr = command.split(" ");
+						//eliminates a player
+						if (commandArr[0].equals("eliminate")) {
+							model.eliminate(commandArr[1].toLowerCase());
+						//plays a card
+						}else if(commandArr[0].equals("play")) {
+							model.playCard(p.getName(), Integer.parseInt(commandArr[1]));
+						//prints out the current model
+						}else if(commandArr[0].equals("print")) {
+							System.out.println(model.toString());
+						}
 					}
 				}
 			}
