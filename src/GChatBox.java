@@ -95,7 +95,7 @@ public class GChatBox extends Application implements Observer {
 		launch(args);
 	}
 	private boolean isServer() {
-		return chatClient.getClass() == null;
+		return chatClient.getClientTuple() == null;
 	}
 	/**
 	 * Handles the view listening from the net and
