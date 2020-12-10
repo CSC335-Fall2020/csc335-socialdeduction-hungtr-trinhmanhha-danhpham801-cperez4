@@ -88,7 +88,7 @@ public class GameControllerServer extends GameController {
 						try{
 							GameMessage obj = (GameMessage) in.readObject();
 							messages.put(obj);
-							System.out.println("New Message received in Server");
+							//System.out.println("New Message received in Server");
 						}
 						catch(IOException 
 							| ClassNotFoundException 

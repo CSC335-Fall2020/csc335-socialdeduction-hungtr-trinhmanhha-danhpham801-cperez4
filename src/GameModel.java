@@ -25,7 +25,6 @@ public class GameModel extends Observable {
 	
 	public GameModel(String name) {
 		numPlayers = 0;
-		System.out.println("Number of players: " + numPlayers);
 		//list of every player's name
 		nameList = new ArrayList<>();
 		//game deck
@@ -57,6 +56,12 @@ public class GameModel extends Observable {
 		
 		if(msg.eventCheck) {
 			playedCards.clear();
+			setChanged();
+			notifyObservers(msg);
+		}
+		
+		if(msg.traitorSet) {
+			this.player.setTraitor();
 			setChanged();
 			notifyObservers(msg);
 		}

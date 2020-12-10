@@ -7,16 +7,22 @@ public class GameMessage implements Serializable {
 	public static final int PLAYCARD = 3;
 	public static final int ENOUGHCARD = 4;
 	public static final int EVENTCHECK = 5;
+	public static final int VOTING = 6;
+	public static final int TRAITORSET = 7;
 	public boolean newPlayer;
 	public boolean enoughPlayer;
 	public boolean playCard;
 	public boolean enoughCard;
 	public boolean eventCheck;
+	public boolean voting;
+	public boolean traitorSet;
 	public String playerName;
 	public ArrayList<String> nameList;
 	public int eventVal;
+	public int traitorID;
 	int latestCard;
 	public boolean eventPassed;
+	public String voted;
 	private static final long serialVersionUID = 1L;
 	
 	public GameMessage(int type) {
@@ -38,6 +44,10 @@ public class GameMessage implements Serializable {
 			newPlayer = true;
 			playerName = name;
 		}
+		else if(type == VOTING) {
+			voting = true;
+			voted = name;
+		}
 	}
 	
 	public GameMessage(int type, ArrayList<String> names) {
@@ -48,11 +58,15 @@ public class GameMessage implements Serializable {
 		}
 	}
 	
-	public GameMessage(int type, int card) {
+	public GameMessage(int type, int val) {
 		init();
 		if(type == PLAYCARD) {
 			playCard = true;
-			latestCard = card;
+			latestCard = val;
+		}
+		else if(type == TRAITORSET) {
+			traitorSet = true;
+			traitorID = val;
 		}
 	}
 	
@@ -82,7 +96,9 @@ public class GameMessage implements Serializable {
 		playCard = false;
 		enoughCard = false;
 		eventCheck = false;
+		voting = false;
 		eventPassed = false;
+		traitorSet = false;
 		eventVal = 0;
 	}
 }

@@ -21,6 +21,12 @@ public class Player {
 			hand.add(deck.draw());
 		}
 	}
+	public Player(String name, boolean isTraitor) {
+		this.name = name;
+		this.isTraitor = isTraitor;
+		this.isAlive = true;
+	}
+	
 	public Player(String name, Deck deck, boolean isTraitor) {
 		this.name = name;
 		this.hand = new ArrayList<Integer>();
@@ -67,6 +73,10 @@ public class Player {
 	 */
 	public void eliminate() {
 		this.isAlive = false;
+	}
+	
+	public void setTraitor() {
+		this.isTraitor = true;
 	}
 	
 	public boolean isTraitor() {

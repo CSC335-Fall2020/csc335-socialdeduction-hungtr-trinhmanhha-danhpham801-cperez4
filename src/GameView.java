@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
+	Label footNote;
 	BorderPane mainBoard;
 	BorderPane eventBoard;
 	FlowPane playField;
@@ -45,7 +46,7 @@ public class GameView extends Application implements Observer {
 		}
 		
 		// Check if an event succeeds or fails
-		if(msg.eventCheck) {
+		else if(msg.eventCheck) {
 			if(msg.eventPassed)
 				playField.setBackground(
 						new Background(
@@ -61,7 +62,7 @@ public class GameView extends Application implements Observer {
 		}
 		
 		// Run on new card played
-		if(msg.playCard) {
+		else if(msg.playCard) {
 			setCard(playField, msg.latestCard);
 			if(msg.enoughCard) {
 				playField.setVisible(true);
@@ -70,6 +71,17 @@ public class GameView extends Application implements Observer {
 			}
 		}
 		
+		// Run on setting who is the traitor
+		else if(msg.traitorSet) {
+			if(ctr.isServer) {
+				if(msg.traitorID == -1) footNote.setText("You are Traitor");
+				((GameControllerServer) ctr).sendToOne(msg.traitorID, msg);
+			}
+			else {
+				footNote.setText("You are traitor");
+			}
+				
+		}
 		
 	}
 
@@ -97,6 +109,9 @@ public class GameView extends Application implements Observer {
 			ctr = new GameControllerClient(model);
 			stage.setTitle("Cardouts Client");
 		}
+		
+		// Footnote for special noting
+		footNote = new Label("");
 		
 		// mainBoard contains topBoard + bottomBoard
 		mainBoard = new BorderPane();
@@ -148,8 +163,9 @@ public class GameView extends Application implements Observer {
 		// Configure
 		bottomBoard.setLeft(playerBoard);
 		bottomBoard.setRight(chatBoard);
+		mainBoard.setBottom(footNote);
 		mainBoard.setTop(topBoard);
-		mainBoard.setBottom(bottomBoard);
+		mainBoard.setCenter(bottomBoard);
 		configure(mainBoard);
 		
 		///////////////////////////////////////////////////////
@@ -162,7 +178,7 @@ public class GameView extends Application implements Observer {
 			setCard(playerHands, i);
 		}
 		
-		Scene scene = new Scene(mainBoard, 900, 600);
+		Scene scene = new Scene(mainBoard, 900, 700);
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -171,8 +187,17 @@ public class GameView extends Application implements Observer {
 	public void setPlayer(FlowPane playerBoard, String player) {
 		Label name = new Label(player);
 		Button vote = new Button("Vote");
+		vote.setOnMouseClicked(e -> {
+			if(ctr.isServer) {
+				model.processMsg(new GameMessage
+						(GameMessage.VOTING, player));
+			}
+			else {
+				((GameControllerClient) ctr).send(new GameMessage
+						(GameMessage.VOTING, player));
+			}
+		});
 		FlowPane onePlayer = new FlowPane();
-		//onePlayer.setBorder(new Border(new BorderStroke(Color.BLACK));
 		onePlayer.getChildren().addAll(name, vote);
 		onePlayer.setPrefWidth(200);
 		onePlayer.setMaxHeight(30);
@@ -214,6 +239,7 @@ public class GameView extends Application implements Observer {
 		placement.getChildren().add(cardWithText);
 		card.setOnMouseClicked(e -> {
 			placement.getChildren().remove(cardWithText);
+			placement.setDisable(true);
 			if(ctr.isServer) {
 				model.player.play(cardValue);
 				GameMessage toSend = new GameMessage

@@ -14,7 +14,7 @@ public class EventCard {
 	private int totalValue;
 	public EventCard(int players) {
 		// total weight should be between 1*Total # of Players and 9*Total # of Players
-		totalValue = new Random().nextInt(7)+1;
+		totalValue = new Random().nextInt(4)+3;
 		totalValue *= players;
 	}
 	

@@ -28,10 +28,10 @@ public class GameControllerClient extends GameController {
                     try{
                     	GameMessage message = messages.take();
                         // Do some handling here...
-                        System.out.println("Message Received: " + message);
+                        System.out.println("Message Received in client: " + message);
                         Platform.runLater(new Runnable() {
 							@Override public void run() {
-								gM.processMsg(message);
+								model.processMsg(message);
 							}
 						});
                     }

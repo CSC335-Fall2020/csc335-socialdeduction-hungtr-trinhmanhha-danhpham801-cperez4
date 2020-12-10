@@ -1,14 +1,21 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 public class GameModelServer extends GameModel {
 	private boolean firstRun;
-
+	private ArrayList<Player> playersList;
+	private HashMap<String, Integer> hm;
+	private int voteList[];
+	private int voteCount;
+	
 	public GameModelServer(String name) {
 		super(name);
 		firstRun = true;
-		//System.out.println("Even val: " + curEvent.getValue());
-		//first event
-		//curEvent = new EventCard(testLimit);
+		playersList = new ArrayList<>();
+		hm = new HashMap<>();
+		voteList = new int[testLimit];
+		voteCount = 0;
 	}
 
 	@Override
@@ -21,6 +28,7 @@ public class GameModelServer extends GameModel {
 		// Game will start when there's 3 players
 		if(numPlayers == testLimit && firstRun) {
 			firstRun = false;
+			init();
 			msg = new GameMessage(GameMessage.ENOUGHPLAYER, nameList);
 			msg.setEventVal(curEvent.getValue());
 			setChanged();
@@ -35,12 +43,64 @@ public class GameModelServer extends GameModel {
 			setChanged();
 			notifyObservers(msg);
 		}
+		
+		if(msg.voting) {
+			int index = hm.get(msg.voted);
+			voteList[index]++;
+			voteCount++;
+			if(voteCount == numPlayers) {
+				resolveVote();
+			}
+		}
 	}
-
-	public void playCard(int card) {
-		playedCards.add(card);
-		player.play(card);
-		System.out.println(playedCards.size());
+	
+	public void resolveVote() {
+		int eliminated = findMaxVoted();
+		
+		// Nobody eliminated
+		if(eliminated == -1) return;
+		
+		playersList.get(eliminated).eliminate();
+		numPlayers--;
+	}
+	
+	public int findMaxVoted() {
+		int maxVote = 0;
+		int maxPerson = -1;
+		for(int i = 0; i < numPlayers; i++) {
+			if(voteList[i] > maxVote) {
+				maxVote = voteList[i];
+				maxPerson = i;
+			}
+			
+			// Two people with same vote will count as no max
+			if(voteList[i] == maxVote) {
+				maxPerson = -1;
+			}
+		}
+		
+		return maxPerson;
+	}
+	
+	public void init() {
+		int traitor = new Random().nextInt(numPlayers);
+		boolean isTraitor = false;
+		int counter = 0;
+		for(String s : nameList) {
+			if(counter == traitor) isTraitor = true;
+			else isTraitor = false;
+			Player p = new Player(s, isTraitor);
+			playersList.add(p);
+			hm.put(s, counter);
+			counter++;
+		}
+		
+		// if server is traitor
+		if(traitor == 0) this.player.setTraitor();
+		else { // traitor is one of the client
+			setChanged();
+			notifyObservers(new GameMessage(GameMessage.TRAITORSET, traitor-1));
+		}
 	}
 
 	public void addPlayer(String name) {
