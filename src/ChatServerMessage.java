@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
- /**
+/**
    * @author Hung Tran
    * Course: CSC 335 Fall 2020
    * Created: Dec 5, 2020
@@ -7,8 +8,16 @@
    * Desc: This is a class for whatever the chat server sends
    * to the chat clients
    */
-public class ChatServerMessage {
-	public static class ChatMessage {
+public class ChatServerMessage implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static class ChatMessage implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		public Player player;
 		public String message;
 		public Object additionalInfo;

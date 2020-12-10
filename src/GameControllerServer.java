@@ -118,4 +118,10 @@ public class GameControllerServer extends GameController {
 		for(ConnectionToClient client : clientList)
 			client.write(message);
 	}
+
+	@Override
+	public GameController.ClientTuple getClientTuple() {
+		// not a client, just act as local
+		return null;
+	}
 }

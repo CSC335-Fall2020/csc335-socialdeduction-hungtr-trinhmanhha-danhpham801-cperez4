@@ -92,4 +92,9 @@ public class GameControllerClient extends GameController {
     public void send(Object obj) {
         server.write(obj);
     }
+
+	@Override
+	public GameController.ClientTuple getClientTuple() {
+		return new GameController.ClientTuple(server.in, server.out, server.socket);
+	}
 }

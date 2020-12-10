@@ -22,7 +22,17 @@ import javafx.scene.text.Text;
  */
 public class ChatLogModel extends Observable {
 	private List<ChatServerMessage> log;
-	
+	private GameController gc;
+	private Thread chatListener;
+	public void attachController(GameController gc) {
+		this.gc = gc;
+		// networking is now available
+		chatListener = new Thread() {
+			public void run() {
+				
+			}
+		};
+	}
 	public ChatLogModel(Observer obs) {
 		log = new ArrayList<>();
 		this.addObserver(obs);
@@ -30,11 +40,13 @@ public class ChatLogModel extends Observable {
 	/**
 	 * Adds 'msg' into the back of the chat log. Notifies
 	 * observers of this chat log model.
-	 * @param msg the message to 
+	 * @param msg the message to add
 	 */
 	public void pushBack(ChatServerMessage msg) {
-		log.add(msg);
-		this.setChanged();
-		this.notifyObservers(msg);
+		synchronized (this) {
+			log.add(msg);
+			this.setChanged();
+			this.notifyObservers(msg);
+		}
 	}
 }

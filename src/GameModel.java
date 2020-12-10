@@ -80,6 +80,10 @@ public class GameModel extends Observable {
 			setChanged();
 			notifyObservers(msg);
 		}
+		else if(msg.chatMsg != null) { // is chat msg
+			setChanged();
+			notifyObservers(msg);
+		}
 	}
 	
 	/*

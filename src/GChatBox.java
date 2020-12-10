@@ -32,7 +32,7 @@ public class GChatBox extends Application implements Observer {
 	private ScrollPane container = new ScrollPane();
 	private TextField tf = new TextField();
 	// to be attached to game view
-	private Object chatClient = null;
+	private GameController.ClientTuple chatClient = null;
 	private ChatLogModel model = new ChatLogModel(this);
 	private Player self = null;
 	@Override
@@ -44,6 +44,13 @@ public class GChatBox extends Application implements Observer {
 	    stage.show();
 	}
 	/**
+	 * Accesses the main pane ready to be rendered by javaFX.
+	 * @return this.mainP
+	 */
+	public BorderPane getMainPane() {
+		return mainP;
+	}
+	/**
 	 * Creates a default instance of GChatBox (client)
 	 * @param w the width reserved for chatbox
 	 * @param h the height reserved for chatbox
@@ -52,8 +59,10 @@ public class GChatBox extends Application implements Observer {
 	 * @return the BorderPane to be attached to the view
 	 */
 	public BorderPane makeInstance(double w, double h,
-			Object client, Player p) {
-		chatClient = client;
+			GameController gc, Player p) {
+		chatClient = gc.getClientTuple();
+		model.addObserver(this);
+		model.attachController(gc);
 		self = p;
 		tryAttach(w, h);
 		return mainP;
@@ -86,6 +95,15 @@ public class GChatBox extends Application implements Observer {
 	}
 	private boolean isLocal() {
 		return chatClient == null;
+	}
+	/**
+	 * Handles the view listening from the net and
+	 * gotten a message of type chat message from the server.
+	 * Simply adds 'msg' into chat model
+	 * @param msg the message listened from server
+	 */
+	public void handleMessage(ChatServerMessage msg) {
+		model.pushBack(msg);
 	}
 	private Object sendMessage(String msg) {
 		ChatServerMessage send = new ChatServerMessage();

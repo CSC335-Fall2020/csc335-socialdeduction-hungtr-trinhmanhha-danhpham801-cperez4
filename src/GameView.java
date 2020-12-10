@@ -30,11 +30,18 @@ public class GameView extends Application implements Observer {
 	FlowPane playField;
 	BorderPane bottomBoard; // Child of mainBoard
 	FlowPane playerBoard;   // Child of bottomBoard
+	GChatBox chatbox;
 	
+	private void handleChat(ChatServerMessage msg) {
+		chatbox.handleMessage(msg);
+	}
 	@Override
 	public void update(Observable o, Object arg) {
 		GameMessage msg = (GameMessage) arg;
-		
+		if(msg.chatMsg != null) {
+			handleChat(msg.chatMsg);
+			return;
+		}
 		// First run when there's enough player
 		if(msg.enoughPlayer && !mainBoard.isVisible()) {
 			mainBoard.setVisible(true);
@@ -181,11 +188,10 @@ public class GameView extends Application implements Observer {
 		playerBoard.setOrientation(Orientation.VERTICAL);
 		//playerBoard.setDisable(true);
 		// Place holder for chatboard
-		GChatBox chatbox = new GChatBox();
-		Object chatClient = null;
-		Player thisPlayer = null;
+		chatbox = new GChatBox();
+		Player thisPlayer = model.getPlayer();
 		BorderPane chatBoard = 
-				chatbox.makeInstance(700, 250, chatClient, thisPlayer);
+				chatbox.makeInstance(700, 250, ctr, thisPlayer);
 		
 
 

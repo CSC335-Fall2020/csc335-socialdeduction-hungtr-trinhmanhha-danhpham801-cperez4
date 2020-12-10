@@ -1,5 +1,17 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
-public class GameController {
+public abstract class GameController {
+	public static class ClientTuple {
+		ObjectInputStream in;
+		ObjectOutputStream out;
+		Socket socket;
+		public ClientTuple(ObjectInputStream i, 
+				ObjectOutputStream o, Socket s) {
+			in = i; out = o; socket = s;
+		}
+	}
 	protected GameModel model;
 	protected boolean isServer;
 	/*
@@ -15,6 +27,7 @@ public class GameController {
 	/////////////NETWORK CODE/////////////////////////////
 	//////////////////////////////////////////////////////
 	
+	public abstract ClientTuple getClientTuple();
 	/*
 	public void makeServer(int user) {
 		try {

@@ -9,7 +9,8 @@ public class GameMessage implements Serializable {
 	public static final int EVENTCHECK = 5;
 	public static final int VOTING = 6;
 	public static final int TRAITORSET = 7;
-	public static final int ELIMINATE = 8;
+	public static final int ELIMINATE = 8,
+			CHAT_MESSAGE = 0xa0f1;
 	public boolean newPlayer;
 	public boolean enoughPlayer;
 	public boolean playCard;
@@ -25,8 +26,11 @@ public class GameMessage implements Serializable {
 	int latestCard;
 	public boolean eventPassed;
 	public String voted;
+	ChatServerMessage chatMsg;
 	private static final long serialVersionUID = 1L;
-	
+	public GameMessage(ChatServerMessage chatMsg) {
+		this.chatMsg = chatMsg;
+	}
 	public GameMessage(int type) {
 		init();
 		if(type == NEWPLAYER) {
@@ -107,5 +111,6 @@ public class GameMessage implements Serializable {
 		traitorSet = false;
 		eliminate = false;
 		eventVal = 0;
+		chatMsg = null;
 	}
 }
