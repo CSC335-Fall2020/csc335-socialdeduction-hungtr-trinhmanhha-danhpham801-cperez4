@@ -1,0 +1,17 @@
+How to Play:
+Each player chooses a display name and joins the server
+
+Each player is delt a random hand, these cards are used to deal with the EventCard (the black and red card on the screen)
+One player is the Saboteur wants the Group to loose as many turns as possible, but no one in the Group knows who the saboteur is.
+
+Each turn a new Event Card is created. All players must play a card in order to deal with the event.
+
+If the Group succeeds (total number of played cards is greater than the event card value) in the event 
+then they are given the choice to eliminate one other player form the game. Player is eliminated through majority vote.
+
+If the Group fails in the event (total number of played cards is less than or equal to the event card value)
+then the Saboteur gets to eliminate anyone they want from the game.
+
+Win Conditions:
+Group Victory - Saboteur is eliminated, More events won than lost at the end of the game
+Saboteur Victory - Only one member of the Group + Saboteur is alive, More failed events than won at the end of the game.
