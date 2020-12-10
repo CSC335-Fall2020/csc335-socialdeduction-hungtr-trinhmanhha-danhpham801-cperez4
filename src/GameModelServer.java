@@ -73,6 +73,14 @@ public class GameModelServer extends GameModel {
 		}
 	}
 	
+	public int checkWin() {
+		for(Player p : playersList) {
+			if(p.isTraitor() && !p.isAlive()) return 1;
+		}
+		if(numPlayers == 2) return -1;
+		return 0;
+	}
+	
 	public int findMaxVoted() {
 		int maxVote = 0;
 		int maxPerson = -1;
@@ -92,7 +100,7 @@ public class GameModelServer extends GameModel {
 	}
 	
 	public void init() {
-		int traitor = new Random().nextInt(numPlayers);
+		int traitor = new Random().nextInt(numPlayers-1) + 1;
 		boolean isTraitor = false;
 		int counter = 0;
 		for(String s : nameList) {
