@@ -27,7 +27,7 @@ public class GameModel extends Observable {
 		numPlayers = 0;
 		//list of every player's name
 		nameList = new ArrayList<>();
-		//game deck
+		// game deck
 		this.sharedDeck = new Deck(testLimit);
 		//eventCard
 		curEvent = new EventCard(testLimit);
@@ -55,7 +55,7 @@ public class GameModel extends Observable {
 			notifyObservers(msg);
 		}
 		
-		if(msg.playCard) {
+		else if(msg.playCard) {
 			playedCards.add(msg.latestCard);
 			if (playedCards.size() == testLimit)
 				msg.markEnoughCard();
@@ -63,14 +63,20 @@ public class GameModel extends Observable {
 			notifyObservers(msg);
 		}
 		
-		if(msg.eventCheck) {
+		else if(msg.eventCheck) {
 			playedCards.clear();
 			setChanged();
 			notifyObservers(msg);
 		}
 		
-		if(msg.traitorSet) {
+		else if(msg.traitorSet) {
 			this.player.setTraitor();
+			setChanged();
+			notifyObservers(msg);
+		}
+		
+		else if(msg.eliminate) {
+			player.eliminate();
 			setChanged();
 			notifyObservers(msg);
 		}

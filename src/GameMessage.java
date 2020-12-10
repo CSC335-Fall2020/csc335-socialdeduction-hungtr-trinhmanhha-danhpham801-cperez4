@@ -9,6 +9,7 @@ public class GameMessage implements Serializable {
 	public static final int EVENTCHECK = 5;
 	public static final int VOTING = 6;
 	public static final int TRAITORSET = 7;
+	public static final int ELIMINATE = 8;
 	public boolean newPlayer;
 	public boolean enoughPlayer;
 	public boolean playCard;
@@ -16,10 +17,11 @@ public class GameMessage implements Serializable {
 	public boolean eventCheck;
 	public boolean voting;
 	public boolean traitorSet;
+	public boolean eliminate;
 	public String playerName;
 	public ArrayList<String> nameList;
 	public int eventVal;
-	public int traitorID;
+	public int playerID;
 	int latestCard;
 	public boolean eventPassed;
 	public String voted;
@@ -66,7 +68,11 @@ public class GameMessage implements Serializable {
 		}
 		else if(type == TRAITORSET) {
 			traitorSet = true;
-			traitorID = val;
+			playerID = val;
+		}
+		else if(type == ELIMINATE) {
+			eliminate = true;
+			playerID = val;
 		}
 	}
 	
@@ -99,6 +105,7 @@ public class GameMessage implements Serializable {
 		voting = false;
 		eventPassed = false;
 		traitorSet = false;
+		eliminate = false;
 		eventVal = 0;
 	}
 }
