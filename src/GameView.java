@@ -24,6 +24,7 @@ public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
 	BorderPane mainBoard;
+	BorderPane eventBoard;
 	FlowPane playField;
 	BorderPane bottomBoard; // Child of mainBoard
 	FlowPane playerBoard;   // Child of bottomBoard
@@ -31,19 +32,41 @@ public class GameView extends Application implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		GameMessage msg = (GameMessage) arg;
+		
+		// First run when there's enough player
 		if(msg.enoughPlayer && !mainBoard.isVisible()) {
 			mainBoard.setVisible(true);
 			for(String s : msg.nameList) {
 				setPlayer(playerBoard, s);
+				setEventCard(eventBoard, msg.eventVal);
 			}
 			if(ctr.isServer) 
 				((GameControllerServer) ctr).sendToAll(msg);
 		}
 		
+		// Check if an event succeeds or fails
+		if(msg.eventCheck) {
+			if(msg.eventPassed)
+				playField.setBackground(
+						new Background(
+								new BackgroundFill(
+										Color.LIGHTGREEN, null, null)));
+			else 
+				playField.setBackground(
+						new Background(
+								new BackgroundFill(
+										Color.RED, null, null)));
+			if(ctr.isServer) 
+				((GameControllerServer) ctr).sendToAll(msg);
+		}
+		
+		// Run on new card played
 		if(msg.playCard) {
 			setCard(playField, msg.latestCard);
 			if(msg.enoughCard) {
 				playField.setVisible(true);
+				if(ctr.isServer) 
+					((GameModelServer) model).resolveEvent();
 			}
 		}
 		
@@ -80,9 +103,9 @@ public class GameView extends Application implements Observer {
 		mainBoard.setVisible(false);
 
 		// eventBoard
-		BorderPane eventBoard = new BorderPane();
+		eventBoard = new BorderPane();
 		eventBoard.setPrefSize(200, 300);
-		setEventCard(eventBoard, 10);
+		
 		
 		// playField contains card being played
 		playField = new FlowPane();
@@ -195,8 +218,9 @@ public class GameView extends Application implements Observer {
 				model.player.play(cardValue);
 				GameMessage toSend = new GameMessage
 						(GameMessage.PLAYCARD, cardValue);
-				((GameControllerServer) ctr).sendToAll(toSend);
 				model.processMsg(toSend);
+				((GameControllerServer) ctr).sendToAll(toSend);
+				
 			}
 			else {
 				model.player.play(cardValue);

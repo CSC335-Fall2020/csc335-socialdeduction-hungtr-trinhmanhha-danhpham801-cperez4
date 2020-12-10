@@ -16,11 +16,11 @@ public class GameModel extends Observable {
 	protected ArrayList<String> nameList;
 	protected Player player;
 	private Deck sharedDeck;
-	private EventCard curEvent;
+	protected EventCard curEvent;
 	protected ArrayList<Integer> playedCards;
 	protected int numPlayers;
 	private int turns;
-	private ProgressBar progress;
+	protected ProgressBar progress;
 	
 	
 	public GameModel(String name) {
@@ -30,10 +30,10 @@ public class GameModel extends Observable {
 		nameList = new ArrayList<>();
 		//game deck
 		this.sharedDeck = new Deck(testLimit);
+		//eventCard
+		curEvent = new EventCard(testLimit);
 		//player of this model
 		this.player = new Player(name, sharedDeck);
-		//first event
-		this.curEvent = new EventCard(testLimit);
 		//will hold cards played on each turn
 		this.playedCards = new ArrayList<Integer>();
 		//default number of turns
@@ -49,9 +49,14 @@ public class GameModel extends Observable {
 		
 		if(msg.playCard) {
 			playedCards.add(msg.latestCard);
-			System.out.println(playedCards.size());
 			if (playedCards.size() == testLimit)
 				msg.markEnoughCard();
+			setChanged();
+			notifyObservers(msg);
+		}
+		
+		if(msg.eventCheck) {
+			playedCards.clear();
 			setChanged();
 			notifyObservers(msg);
 		}
@@ -84,19 +89,7 @@ public class GameModel extends Observable {
 		return card;
 	}*/
 	
-	//resolves the current event, returns true if the event was a success or false if it failed
-	public boolean resolveEvent() {
-		this.curEvent.reduce(playedCards);
-		boolean result = curEvent.pass();
-		//adds to the success/fail counters
-		if(result) {
-			progress.makeProgress('p');
-		}else {
-			progress.makeProgress('f');
-		}
-		this.playedCards = new ArrayList<Integer>();
-		return result;
-	}
+	
 	
 	/*
 	 * eliminates a player form the game
