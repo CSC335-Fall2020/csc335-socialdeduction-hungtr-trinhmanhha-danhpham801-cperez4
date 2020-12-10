@@ -12,13 +12,14 @@ import java.util.Random;
  * Desc: This file is a model class for the social deduction card-game
  */
 public class GameModel extends Observable {
-	protected final int testLimit = 3;
+	protected final int testLimit = 4;
 	protected ArrayList<String> nameList;
 	protected Player player;
 	private Deck sharedDeck;
 	protected EventCard curEvent;
 	protected ArrayList<Integer> playedCards;
 	protected int numPlayers;
+	protected boolean isVotingPhase;
 	private int turns;
 	protected ProgressBar progress;
 	
@@ -38,6 +39,7 @@ public class GameModel extends Observable {
 		//default number of turns
 		this.turns = 5;
 		this.progress = new ProgressBar();
+		isVotingPhase = false;
 	}
 	
 	public void processMsg(GameMessage msg) {
@@ -78,28 +80,10 @@ public class GameModel extends Observable {
 		player.play(cardValue);
 	}*/
 	
-	public void regPlayer(String name, Deck sharedDeck, boolean isTraitor) {
-		this.player = new Player(name, sharedDeck, isTraitor);
-	}
-	
 	//updates the event once it has been resolved
 	public void generateEvent() {
 		this.curEvent = new EventCard(this.numPlayers);
 	}
-	
-	/*
-	//returns the int value of the card played
-	public int playCard(String name, int card) {
-		for(Player p: players) {
-			if(p.getName().equals(name) && p.hasCard(card)) {
-				p.play(card);
-				p.draw(sharedDeck);
-				playedCards.add(card);
-			}
-		}
-		return card;
-	}*/
-	
 	
 	
 	/*
@@ -185,6 +169,10 @@ public class GameModel extends Observable {
 		else {
 			this.progress.makeProgress(c);
 		}
+	}
+	
+	public void enterVotingPhase() {
+		isVotingPhase = true;
 	}
 	
 	/*

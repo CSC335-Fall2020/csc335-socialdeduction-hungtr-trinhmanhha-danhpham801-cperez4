@@ -55,7 +55,6 @@ public class MenuView extends Stage {
 		okButton.setOnMouseClicked(e -> {
 			isComplete = true;
 			name = nameText.getText();
-			//testField.setText(nameText.getText());
 			this.close();
 		});
 		cancelButton.setOnMouseClicked(e -> {

@@ -6,6 +6,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -63,6 +65,7 @@ public class GameView extends Application implements Observer {
 										Color.RED, null, null)));
 			if(ctr.isServer) 
 				((GameControllerServer) ctr).sendToAll(msg);
+			model.enterVotingPhase();
 		}
 		
 		// Run on new card played
@@ -91,9 +94,24 @@ public class GameView extends Application implements Observer {
 					getEliminated();
 				}
 				else ((GameControllerServer) ctr).sendToOne(msg.playerID, msg);
+				checkGameOver(((GameModelServer) model).checkWin());
 			}
 			else getEliminated();
 		}
+	}
+	
+	// End the game and notify the player if the game is over
+	public void checkGameOver(int gameStatus) {
+		if(gameStatus == 0) return;
+		Alert noti = new Alert(AlertType.INFORMATION);
+		if(gameStatus == 1) {
+			noti.setContentText("Traitor eliminated! Players win!");
+		}
+		else if(gameStatus == -1) {
+			noti.setContentText("2 players left. Traitor win!");
+		}
+		
+		noti.showAndWait();
 	}
 	
 	// Set the screen to notify a person is eliminated
@@ -212,6 +230,10 @@ public class GameView extends Application implements Observer {
 		Label name = new Label(player);
 		Button vote = new Button("Vote");
 		vote.setOnMouseClicked(e -> {
+			if(!model.isVotingPhase) {
+				e.consume();
+				return;
+			}
 			if(ctr.isServer) {
 				model.processMsg(new GameMessage
 						(GameMessage.VOTING, player));
