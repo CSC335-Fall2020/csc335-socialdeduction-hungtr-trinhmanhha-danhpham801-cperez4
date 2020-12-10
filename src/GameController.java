@@ -1,3 +1,4 @@
+
 public class GameController {
 	protected GameModel model;
 	protected boolean isServer;
@@ -80,10 +81,20 @@ public class GameController {
 	////////NON-NETWORK///////////////////
 	//////////////////////////////////////
 	
+	/**
+	 * Checks whether the game is over by consulting
+	 * to the state of the game from the model
+	 * @return whether the game is over
+	 */
 	public boolean isGameOver() {
 		return model.isGameOver()==-1;
 	}
 	
+	/**
+	 * Forces the model to generate an event. This
+	 * is assuming that the player is making a legal
+	 * move (throwing out an event card)
+	 */
 	public void generateEvent() {
 		model.generateEvent();
 	}

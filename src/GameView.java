@@ -154,10 +154,12 @@ public class GameView extends Application implements Observer {
 		playerBoard = new FlowPane();
 		playerBoard.setOrientation(Orientation.VERTICAL);
 		// Place holder for chatboard
-		Rectangle chatBoard = new Rectangle();
-		chatBoard.setWidth(700);
-		chatBoard.setHeight(320);
-		chatBoard.setFill(Color.GRAY);
+		GChatBox chatbox = new GChatBox();
+		Object chatClient = null;
+		Player thisPlayer = null;
+		BorderPane chatBoard = 
+				chatbox.makeInstance(700, 250, chatClient, thisPlayer);
+		
 
 
 		// Configure

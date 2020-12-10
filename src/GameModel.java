@@ -3,7 +3,7 @@ import java.util.Observable;
 import java.util.Random;
 
 /**
- * @author Hung Tran
+ * @author Hung Tran, cperez4
  * <p>
  * Course: CSC 335 Fall 2020
  * <p>
@@ -38,6 +38,15 @@ public class GameModel extends Observable {
 		//default number of turns
 		this.turns = 5;
 		this.progress = new ProgressBar();
+//		int i = 0;
+//		for(String name: playerNames) {
+//			if(traitor == i) {
+//				this.players[i] = new Player(name, sharedDeck, true);
+//			}else {
+//				this.players[i] = new Player(name, sharedDeck);
+//			}
+//			i++;
+//		}
 	}
 	
 	public void processMsg(GameMessage msg) {
@@ -75,14 +84,30 @@ public class GameModel extends Observable {
 	public void regPlayer(String name, Deck sharedDeck, boolean isTraitor) {
 		this.player = new Player(name, sharedDeck, isTraitor);
 	}
-	
-	//updates the event once it has been resolved
+
+	/**
+	 * Creates an event in the game model. This forces the
+	 * group of players to resolve the event.
+	 */
 	public void generateEvent() {
 		this.curEvent = new EventCard(this.numPlayers);
 	}
+	/**
+	 * Forcefully makes this game model "focus" on 'event',
+	 * forces the group of players to resolve 'event'
+	 * @param event the event to be forcefully "focused"
+	 */
+	public void generateEvent(EventCard event) {
+		this.curEvent = event;
+	}
 	
+	/**
+	 * returns the int value of the card played
+	 * @param name The name of the player that is playing the card
+	 * @param card the card number
+	 * @return The card number
+	 */
 	/*
-	//returns the int value of the card played
 	public int playCard(String name, int card) {
 		for(Player p: players) {
 			if(p.getName().equals(name) && p.hasCard(card)) {
@@ -94,11 +119,28 @@ public class GameModel extends Observable {
 		return card;
 	}*/
 	
-	
-	
-	/*
+	/**
+	 * resolves the current event, 
+	 * @return true if the event was a 
+	 * success or false if it failed
+	 */
+	public boolean resolveEvent() {
+		this.curEvent.reduce(playedCards);
+		boolean result = curEvent.pass();
+		//adds to the success/fail counters
+		if(result) {
+			progress.makeProgress('p');
+		}else {
+			progress.makeProgress('f');
+		}
+		//resets the cards that are played after the event has been resolved
+		this.playedCards = new ArrayList<Integer>();
+		return result;
+	}
+	/**
 	 * eliminates a player form the game
-	 * returns 0 if the player was eliminated successfully, -1 if the player was already eliminated
+	 * @return 0 if the player was eliminated successfully,
+	 * -1 if the player was already eliminated
 	 */
 	public int eliminate(String name) {
 		if(!player.isAlive()) return -1;
@@ -107,16 +149,16 @@ public class GameModel extends Observable {
 		return 0;
 	}
 	
-	/*
+	/**
 	 * checks to see if any of the end-game conditions have been met
-	 * returns -1 if the game is not over, 0 if the group wins, 1 if the saboteur wins
+	 * @return -1 if the game is not over, 0 if the group wins, 1 if the saboteur wins
 	 */
 	public int isGameOver() {
 		//checks to see if the saboteur is voted out
 		if (this.player.isTraitor() && !this.player.isAlive()) {
 			return 0;
 		//checks to see if there are no more events to be played
-		}else if(turns == 0){
+		} else if(turns == 0){
 			//if more events where successful then the group wins
 			if (progress.winner() > 0){
 				return 0;
@@ -124,7 +166,7 @@ public class GameModel extends Observable {
 			}else {
 				return 1;
 			}
-		}else {
+		} else {
 			//checks to see if there are only two players left (sabotuer and a +1)
 			if(numPlayers == 2) return 0;
 		}
@@ -155,23 +197,30 @@ public class GameModel extends Observable {
 		rep += this.progress.toString() + "\n";
 		rep += "Players:\n";
 		rep +="--------------------------------------------------------\n";
+
 		rep += player.toString() + "\n";
 		rep +="--------------------------------------------------------\n";
 		rep += "Current Event:\n" + curEvent.toString();
 		return rep;
 	}
 	
-	public Deck getDeck() {
-		return this.sharedDeck;
-	}
-	
+	/**
+	 * Adds 'card' into played cards
+	 * @param card the card to be added to the list of played cards
+	 */
 	public void add2PlayedC(Integer card) {
 		this.playedCards.add(card);
 	}
-	
+	/**
+	 * Clears the played cards list
+	 */
 	public void emptyPlayed() {
 		this.playedCards = new ArrayList<>();
 	}
+	/**
+	 * Makes this game model to make progress.
+	 * @param c 'p' if the event passed, otherwise, interpret as 'f' (falled)
+	 */
 	public void makeProgress(char c) {
 		if(c=='p') {
 			this.progress.makeProgress(c);
