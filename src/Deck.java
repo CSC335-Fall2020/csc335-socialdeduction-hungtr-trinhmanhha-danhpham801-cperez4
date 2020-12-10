@@ -19,8 +19,10 @@ import java.util.Random;
 
 
 public class Deck {
+	private int players;
 	private Queue<Integer> deck = new LinkedList<>();
 	public Deck(int players) {
+		this.players = players;
 		ArrayList<Integer> aL = new ArrayList<>();
 		// Make a deck
 		for(int i = 1; i<=9 ; i++) {
@@ -47,9 +49,26 @@ public class Deck {
 	}
 	/**
 	 * Draws a card from the deck
-	 * @return the event card number that is drawn
+	 * @return the card number that is drawn
 	 */
 	public int draw() {
+		if(deck.isEmpty()) {
+			Queue<Integer> temp = new LinkedList<>();
+			ArrayList<Integer> aL = new ArrayList<>();
+			for(int i = 1; i<=9 ; i++) {
+				for(int j = 0; j<2*players; j++) {
+					aL.add(i);
+				}
+			}
+			for(int p=0; p<players; p++) {
+				int time = new Random().nextInt(players)+1;
+				for(int s=0; s<time; s++) {
+					Collections.shuffle(aL);
+				}
+			}
+			temp.addAll(aL);
+			this.deck = temp;
+		}
 		return deck.poll();
 	}
 	
