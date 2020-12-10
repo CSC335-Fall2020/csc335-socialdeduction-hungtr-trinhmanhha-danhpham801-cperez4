@@ -50,18 +50,27 @@ public class GameModelServer extends GameModel {
 			voteCount++;
 			if(voteCount == numPlayers) {
 				resolveVote();
+				
 			}
 		}
 	}
 	
 	public void resolveVote() {
 		int eliminated = findMaxVoted();
+		System.out.println("Eliminate " + eliminated);
 		
 		// Nobody eliminated
 		if(eliminated == -1) return;
 		
 		playersList.get(eliminated).eliminate();
 		numPlayers--;
+		
+		// Server got eliminated
+		if(eliminated == 0) this.player.eliminate();
+		else { // Client got eliminated
+			setChanged();
+			notifyObservers(new GameMessage(GameMessage.ELIMINATE, eliminated-1));
+		}
 	}
 	
 	public int findMaxVoted() {
@@ -74,7 +83,7 @@ public class GameModelServer extends GameModel {
 			}
 			
 			// Two people with same vote will count as no max
-			if(voteList[i] == maxVote) {
+			else if(voteList[i] == maxVote) {
 				maxPerson = -1;
 			}
 		}

@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 public class GameView extends Application implements Observer {
 	private GameModel model;
 	private GameController ctr;
+	ArrayList<Button> voteButtons;
 	Label footNote;
 	BorderPane mainBoard;
 	BorderPane eventBoard;
@@ -41,17 +42,20 @@ public class GameView extends Application implements Observer {
 				setPlayer(playerBoard, s);
 				setEventCard(eventBoard, msg.eventVal);
 			}
+			//toggleButtons();
 			if(ctr.isServer) 
 				((GameControllerServer) ctr).sendToAll(msg);
 		}
 		
 		// Check if an event succeeds or fails
 		else if(msg.eventCheck) {
-			if(msg.eventPassed)
+			if(msg.eventPassed) {
 				playField.setBackground(
 						new Background(
 								new BackgroundFill(
 										Color.LIGHTGREEN, null, null)));
+				playerBoard.setDisable(false);
+			}
 			else 
 				playField.setBackground(
 						new Background(
@@ -74,15 +78,31 @@ public class GameView extends Application implements Observer {
 		// Run on setting who is the traitor
 		else if(msg.traitorSet) {
 			if(ctr.isServer) {
-				if(msg.traitorID == -1) footNote.setText("You are Traitor");
-				((GameControllerServer) ctr).sendToOne(msg.traitorID, msg);
+				if(msg.playerID == -1) footNote.setText("You are Traitor");
+				else ((GameControllerServer) ctr).sendToOne(msg.playerID, msg);
 			}
-			else {
-				footNote.setText("You are traitor");
-			}
-				
+			else footNote.setText("You are traitor");
 		}
 		
+		// Determine a person to eliminate
+		else if(msg.eliminate) {
+			if(ctr.isServer) {
+				if(msg.playerID == -1) {
+					getEliminated();
+				}
+				else ((GameControllerServer) ctr).sendToOne(msg.playerID, msg);
+			}
+			else getEliminated();
+		}
+	}
+	
+	// Set the screen to notify a person is eliminated
+	public void getEliminated() {
+		footNote.setText("You are eliminated");
+		mainBoard.setDisable(true);
+		mainBoard.setBackground(new Background(
+								new BackgroundFill(
+										Color.RED, null, null)));
 	}
 
 	@Override
@@ -109,6 +129,9 @@ public class GameView extends Application implements Observer {
 			ctr = new GameControllerClient(model);
 			stage.setTitle("Cardouts Client");
 		}
+		
+		// Voting button that would be implemented later
+		voteButtons = new ArrayList<>();
 		
 		// Footnote for special noting
 		footNote = new Label("");
@@ -153,6 +176,7 @@ public class GameView extends Application implements Observer {
 		bottomBoard = new BorderPane();
 		playerBoard = new FlowPane();
 		playerBoard.setOrientation(Orientation.VERTICAL);
+		//playerBoard.setDisable(true);
 		// Place holder for chatboard
 		Rectangle chatBoard = new Rectangle();
 		chatBoard.setWidth(700);
@@ -196,7 +220,9 @@ public class GameView extends Application implements Observer {
 				((GameControllerClient) ctr).send(new GameMessage
 						(GameMessage.VOTING, player));
 			}
+			playerBoard.setDisable(true);
 		});
+		voteButtons.add(vote);
 		FlowPane onePlayer = new FlowPane();
 		onePlayer.getChildren().addAll(name, vote);
 		onePlayer.setPrefWidth(200);
