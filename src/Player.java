@@ -1,12 +1,17 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /*
  * models a player in the game
  */
 
-public class Player {
+public class Player implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
-	private ArrayList<Integer> hand;
+	private transient ArrayList<Integer> hand;
 	private boolean isTraitor = false;
 	private boolean isAlive = true;
 	

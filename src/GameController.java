@@ -27,7 +27,17 @@ public abstract class GameController {
 	/////////////NETWORK CODE/////////////////////////////
 	//////////////////////////////////////////////////////
 	
+	/**
+	 * Retrieves the client tuple (socket, input stream, output stream)
+	 * @return the client tuple of this
+	 */
 	public abstract ClientTuple getClientTuple();
+	/**
+	 * The agreed-upon way to send a certain message over the
+	 * net assuming this is a controller
+	 * @param obj the object to be sent over the net (GameMessage)
+	 */
+	public abstract void send(Object obj);
 	/*
 	public void makeServer(int user) {
 		try {

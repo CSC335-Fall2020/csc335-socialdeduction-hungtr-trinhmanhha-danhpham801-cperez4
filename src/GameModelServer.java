@@ -20,6 +20,12 @@ public class GameModelServer extends GameModel {
 
 	@Override
 	public void processMsg(GameMessage msg) {
+		if(msg.chatMsg != null) {
+			// process chatMsg
+			setChanged();
+			notifyObservers(msg);
+			return;
+		}
 		// If message notifies there's a new player
 		// Add that player name to nameList
 		if(msg.newPlayer) addPlayer(msg.playerName);

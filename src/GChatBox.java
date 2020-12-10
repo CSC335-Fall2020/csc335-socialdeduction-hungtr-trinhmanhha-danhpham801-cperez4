@@ -32,7 +32,8 @@ public class GChatBox extends Application implements Observer {
 	private ScrollPane container = new ScrollPane();
 	private TextField tf = new TextField();
 	// to be attached to game view
-	private GameController.ClientTuple chatClient = null;
+	private GameController chatClient = null;
+	
 	private ChatLogModel model = new ChatLogModel(this);
 	private Player self = null;
 	@Override
@@ -60,7 +61,7 @@ public class GChatBox extends Application implements Observer {
 	 */
 	public BorderPane makeInstance(double w, double h,
 			GameController gc, Player p) {
-		chatClient = gc.getClientTuple();
+		chatClient = gc;
 		model.addObserver(this);
 		model.attachController(gc);
 		self = p;
@@ -93,8 +94,8 @@ public class GChatBox extends Application implements Observer {
 	public static void main(String []args){
 		launch(args);
 	}
-	private boolean isLocal() {
-		return chatClient == null;
+	private boolean isServer() {
+		return chatClient.getClass() == null;
 	}
 	/**
 	 * Handles the view listening from the net and
@@ -108,12 +109,10 @@ public class GChatBox extends Application implements Observer {
 	private Object sendMessage(String msg) {
 		ChatServerMessage send = new ChatServerMessage();
 		send.msg = new ChatServerMessage.ChatMessage(self, msg);
-		if(isLocal()) {
-			model.pushBack(send);
-		} else {
-		throw new RuntimeException(
-				"Unimplemented method. Use chatClient to do something here.");
+		if(isServer()) {
+			model.pushBack(send);			
 		}
+		chatClient.send(new GameMessage(send));
 		return null;
 	}
 	private void addText(String text) {

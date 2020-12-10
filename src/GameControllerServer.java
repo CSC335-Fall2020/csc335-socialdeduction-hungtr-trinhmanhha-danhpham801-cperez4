@@ -110,6 +110,10 @@ public class GameControllerServer extends GameController {
 		}
 	}
 
+	public void send(Object obj) {
+		GameMessage msg = (GameMessage)obj;
+		sendToAll(msg);
+	}
 	public void sendToOne(int index, Object message)throws IndexOutOfBoundsException {
 		clientList.get(index).write(message);
 	}
@@ -121,7 +125,6 @@ public class GameControllerServer extends GameController {
 
 	@Override
 	public GameController.ClientTuple getClientTuple() {
-		// not a client, just act as local
 		return null;
 	}
 }
