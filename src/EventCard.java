@@ -50,5 +50,11 @@ public class EventCard {
 		rep += "---------";
 		return rep;
 	}
-	
+	/**
+	 * Accesses the total value of the event card
+	 * @return the total value of this event card
+	 */
+	public int getValue() {
+		return this.totalValue;
+	}
 }
