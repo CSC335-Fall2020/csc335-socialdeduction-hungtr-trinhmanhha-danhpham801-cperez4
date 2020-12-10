@@ -13,14 +13,14 @@ public class MenuView extends Stage {
 	boolean isServer;
 	int players;
 	String name;
-	boolean isComplete;
+	boolean isCompleted;
 	private Scene scene;
 	private GridPane window;
 	private ToggleGroup createGrp;
 	private Button okButton;
 	private Button cancelButton;
 	TextField nameText;
-	TextField playerText;
+	TextField playerText; // player number
 	Label testField;
 	
 
@@ -53,13 +53,26 @@ public class MenuView extends Stage {
 		okButton = new Button("OK");
 		cancelButton = new Button("Cancel");
 		okButton.setOnMouseClicked(e -> {
-			isComplete = true;
+			testField.setStyle("-fx-text-fill: red");
 			name = nameText.getText();
+			if(name == null || name.length() < 1) {
+				testField.setText("Name is invalid.");
+				return; // lambda magic
+			} else if (isServer){
+				String nPlayersStr = playerText.getText();
+				try {
+					players = Integer.parseInt(nPlayersStr);
+				} catch (NumberFormatException except) {
+					testField.setText("Check num players");
+					return;
+				}
+			}
 			//testField.setText(nameText.getText());
 			this.close();
+			isCompleted = true;
 		});
 		cancelButton.setOnMouseClicked(e -> {
-			isComplete = false;
+			isCompleted = false;
 			this.close();
 		});
 		window.add(okButton, 0, 3);
@@ -67,6 +80,7 @@ public class MenuView extends Stage {
 		
 		// Debug
 		testField = new Label("Nothing for now");
+		testField.setStyle("-fx-text-fill: black");
 		window.add(testField, 0, 4);
 
 		this.initModality(Modality.APPLICATION_MODAL);

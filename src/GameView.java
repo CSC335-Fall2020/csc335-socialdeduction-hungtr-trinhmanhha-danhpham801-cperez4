@@ -93,7 +93,10 @@ public class GameView extends Application implements Observer {
 		MenuView menu = new MenuView();
 		menu.showAndWait();
 		
-		if(!menu.isComplete) stage.close();
+		if(!menu.isCompleted) {
+			stage.close();
+			return; // exit program
+		}
 		
 		// Use info acquired from menu to setup
 		if(menu.isServer) {
