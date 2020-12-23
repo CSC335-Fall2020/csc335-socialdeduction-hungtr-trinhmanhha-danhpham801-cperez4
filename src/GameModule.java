@@ -1,3 +1,5 @@
+import javafx.scene.layout.Pane;
+
 /**
  * @author Hung Tran
  * <p>

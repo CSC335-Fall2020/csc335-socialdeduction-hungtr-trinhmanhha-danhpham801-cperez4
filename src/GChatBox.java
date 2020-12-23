@@ -55,7 +55,7 @@ public class GChatBox extends Application implements Observer {
 	 * Creates a default instance of GChatBox (client)
 	 * @param w the width reserved for chatbox
 	 * @param h the height reserved for chatbox
-	 * @param client the client class that uses chatbox
+	 * @param gc the game controller that uses chatbox
 	 * @param p the player that controls this chatbox
 	 * @return the BorderPane to be attached to the view
 	 */
