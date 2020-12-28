@@ -9,10 +9,12 @@ import java.util.Random;
  * <p>
  * Created: Dec 2, 2020
  * File: GameModel.java
- * Desc: This file is a model class for the social deduction card-game
+ * Desc: This file is a model class for the social deduction card-game.
+ * Supposedly, this class shows the data that the current "player" has
+ * access to seeing
  */
 public class GameModel extends Observable {
-	protected final int testLimit = 4;
+	protected static final int TEST_LIMIT = 4;
 	protected ArrayList<String> nameList;
 	protected Player player;
 	private Deck sharedDeck;
@@ -29,9 +31,9 @@ public class GameModel extends Observable {
 		//list of every player's name
 		nameList = new ArrayList<>();
 		// game deck
-		this.sharedDeck = new Deck(testLimit);
+		this.sharedDeck = new Deck(TEST_LIMIT);
 		//eventCard
-		curEvent = new EventCard(testLimit);
+		curEvent = new EventCard(TEST_LIMIT);
 		//player of this model
 		this.player = new Player(name, sharedDeck);
 		//will hold cards played on each turn
@@ -50,7 +52,7 @@ public class GameModel extends Observable {
 		
 		else if(msg.playCard) {
 			playedCards.add(msg.latestCard);
-			if (playedCards.size() == testLimit)
+			if (playedCards.size() == TEST_LIMIT)
 				msg.markEnoughCard();
 			setChanged();
 			notifyObservers(msg);
