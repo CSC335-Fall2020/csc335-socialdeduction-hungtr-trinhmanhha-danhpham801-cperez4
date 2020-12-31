@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
    * @author Hung Tran
@@ -20,17 +21,17 @@ public class ChatServerMessage implements Serializable {
 		private static final long serialVersionUID = 1L;
 		public Player player;
 		public String message;
-		public Object additionalInfo;
+		public Optional<Object> additionalInfo;
 		private String buf = null;
 		public ChatMessage(Player p, String msg, Object info) {
-			player = p; message = msg; additionalInfo = info;
+			player = p; message = msg; additionalInfo = Optional.of(info);
 		}
 		public ChatMessage(Player p, String msg) {
-			this(p, msg, null);
+			this(p, msg, Optional.empty());
 		}
 		private String infoStr() {
 			if(additionalInfo != null) {
-				return additionalInfo.toString();
+				return additionalInfo.get().toString();
 			}
 			return "";
 		}

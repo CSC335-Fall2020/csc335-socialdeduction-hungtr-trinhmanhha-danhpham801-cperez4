@@ -1,12 +1,22 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * The Message class to be passed around in runtime.
+ * 
+ * Author: WoodyMC
+ * Modified by Hung Tran (Pegasust/hungtr-uofa) for minimum
+ * data size and code beauty
+ * 
+ *
+ */
 public class GameMessage implements Serializable {
 	/**
-	 * Enums aren't guaranteed to be serializable,
-	 * so we're just listing consts
+	 * treat this as the shift amount for the bitmask
+	 * type of message
 	 */
 	public static final int 
+			PLACEHOLDER = 0,
 			NEWPLAYER = 1,
 			ENOUGHPLAYER = 2, 
 			PLAYCARD = 3,
@@ -15,7 +25,7 @@ public class GameMessage implements Serializable {
 			VOTING = 6,
 			TRAITORSET = 7,
 			ELIMINATE = 8,
-			CHAT_MESSAGE = 0xa0f1;
+			CHAT_MESSAGE = 9;
 //	public boolean newPlayer;
 //	public boolean enoughPlayer;
 //	public boolean playCard;
