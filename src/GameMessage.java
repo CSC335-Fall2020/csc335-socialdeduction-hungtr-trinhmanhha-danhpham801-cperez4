@@ -2,23 +2,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GameMessage implements Serializable {
-	public static final int NEWPLAYER = 1;
-	public static final int ENOUGHPLAYER = 2; 
-	public static final int PLAYCARD = 3;
-	public static final int ENOUGHCARD = 4;
-	public static final int EVENTCHECK = 5;
-	public static final int VOTING = 6;
-	public static final int TRAITORSET = 7;
-	public static final int ELIMINATE = 8,
+	/**
+	 * Enums aren't guaranteed to be serializable,
+	 * so we're just listing consts
+	 */
+	public static final int 
+			NEWPLAYER = 1,
+			ENOUGHPLAYER = 2, 
+			PLAYCARD = 3,
+			ENOUGHCARD = 4,
+			EVENTCHECK = 5,
+			VOTING = 6,
+			TRAITORSET = 7,
+			ELIMINATE = 8,
 			CHAT_MESSAGE = 0xa0f1;
-	public boolean newPlayer;
-	public boolean enoughPlayer;
-	public boolean playCard;
-	public boolean enoughCard;
-	public boolean eventCheck;
-	public boolean voting;
-	public boolean traitorSet;
-	public boolean eliminate;
+//	public boolean newPlayer;
+//	public boolean enoughPlayer;
+//	public boolean playCard;
+//	public boolean enoughCard;
+//	public boolean eventCheck;
+//	public boolean voting;
+//	public boolean traitorSet;
+//	public boolean eliminate;
 	public String playerName;
 	public ArrayList<String> nameList;
 	public int eventVal;

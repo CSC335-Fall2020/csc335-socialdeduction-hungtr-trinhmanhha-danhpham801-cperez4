@@ -1,5 +1,8 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /*
  * models a player in the game
@@ -107,5 +110,35 @@ public class Player implements Serializable {
 		rep += "Traitor: " + this.isTraitor + "\n";
 		rep += "Alive: " + this.isAlive;
 		return rep;
+	}
+	private void writePlayerHand(ObjectOutputStream oos) throws Exception {
+		oos.writeObject(hand.size()); // serialize only size
+	}
+	private void readPlayerHand(ObjectInputStream ois) throws Exception {
+		Integer length = (Integer) ois.readObject();
+		this.hand = new ArrayList<>();
+		for(int i = 0 ; i < length ;++i) {
+			this.hand.add(null);
+		}
+	}
+	/**
+	 * Tests whether this player is "self"
+	 * @return whether this player is self. This method
+	 * returns Optional.empty() (check: retval.isPresent())
+	 * if the hand is empty.
+	 */
+	public Optional<Boolean> isSelf() {
+		// use the fact that the values of the cards will be null if not self
+		// (because other players have transient hand)
+		return hand.isEmpty()? Optional.empty():
+			Optional.of(hand.get(0)!=null);
+	}
+	private void writeObject(ObjectOutputStream oos) throws Exception {
+		oos.defaultWriteObject(); // write the objects (non-transient)
+		writePlayerHand(oos);
+	}
+	private void readObject(ObjectInputStream ois) throws Exception {
+		ois.defaultReadObject();
+		readPlayerHand(ois);
 	}
 }

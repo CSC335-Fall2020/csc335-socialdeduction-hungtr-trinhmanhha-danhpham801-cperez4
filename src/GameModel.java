@@ -15,8 +15,9 @@ import java.util.Random;
  */
 public class GameModel extends Observable {
 	protected static final int TEST_LIMIT = 4;
-	protected ArrayList<String> nameList;
-	protected Player player;
+	// protected ArrayList<String> nameList;
+	protected ArrayList<Player> players;
+	// protected Player player;
 	private Deck sharedDeck;
 	protected EventCard curEvent;
 	protected ArrayList<Integer> playedCards;
