@@ -1,3 +1,4 @@
+package social_deduction;
 import java.util.Scanner;
 
 public class misc {

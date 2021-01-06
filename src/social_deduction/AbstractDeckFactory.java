@@ -1,3 +1,4 @@
+package social_deduction;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

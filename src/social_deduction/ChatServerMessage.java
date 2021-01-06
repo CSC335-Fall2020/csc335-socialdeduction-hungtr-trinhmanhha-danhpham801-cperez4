@@ -1,3 +1,4 @@
+package social_deduction;
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ public class ChatServerMessage implements Serializable {
 		private static final long serialVersionUID = 1L;
 		public Player player;
 		public String message;
+		/**
+		 * TODO: serilize this?
+		 */
 		public Optional<Object> additionalInfo;
 		private String buf = null;
 		public ChatMessage(Player p, String msg, Object info) {

@@ -1,3 +1,4 @@
+package social_deduction;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

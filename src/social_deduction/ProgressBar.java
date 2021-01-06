@@ -1,3 +1,4 @@
+package social_deduction;
 /**
  * @author Danh Pham
  * Course: CSC 335 Fall 2020

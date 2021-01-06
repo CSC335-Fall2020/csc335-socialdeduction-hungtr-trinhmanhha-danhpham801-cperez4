@@ -1,5 +1,9 @@
+package social_deduction;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The Message class to be passed around in runtime.
@@ -12,6 +16,7 @@ import java.util.ArrayList;
  */
 public class GameMessage implements Serializable {
 	/**
+	 * opcode of this message
 	 * treat this as the shift amount for the bitmask
 	 * type of message
 	 */
@@ -34,12 +39,27 @@ public class GameMessage implements Serializable {
 //	public boolean voting;
 //	public boolean traitorSet;
 //	public boolean eliminate;
+	public static class Message<A extends Serializable> implements Serializable {
+		/**
+		 * Optional
+		 */
+		private A args;
+		/**
+		 * comparing short to integral type is "cheap",
+		 * and we are minimizing the data size, so we're using short
+		 * (or byte, maybe)
+		 */
+		private short opcode;
+	}
 	public String playerName;
 	public ArrayList<String> nameList;
 	public int eventVal;
 	public int playerID;
 	int latestCard;
 	public boolean eventPassed;
+	/**
+	 * Player getting voted off
+	 */
 	public String voted;
 	ChatServerMessage chatMsg;
 	private static final long serialVersionUID = 1L;
